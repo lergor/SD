@@ -1,19 +1,31 @@
-
+"""
+The Parser class that parse list of lexemes and build a tree of commands.
+It also uses the static Preprocessor class for variables substitution.
+"""
 from src.lexer import *
 from src.commands import *
-
-class ParserException(Exception):
-    """An exception raising while parsing. """
-    pass
+from src.preprocessor import *
 
 
 class Parser:
-    """The Parser class that takes lexems from Lexer and make commands from it."""
+    """
+    The Parser class that takes list lexemes
+    from Lexer and makes the commands tree from it.
+    """
     def __init__(self, environment):
+        """
+        Takes the current environment.
+        :param environment: the Environment instance with variables.
+        """
         self.__env = environment
 
     def build_command(self, list_of_lexems):
-        """The main method that returns a final command."""
+        """
+        Takes lexemes and builds the commands tree
+        while the current index is not the last.
+        :param list_of_lexems: list of Lexemes.
+        :return: the root of the Command tree.
+        """
         self.__list_lexems = list_of_lexems
         self.__cur_ix = 0
         self.__last_ix = len(list_of_lexems)
@@ -23,95 +35,111 @@ class Parser:
             command = self.__get_command(self.__cur_ix)
             if command:
                 self.__commands.append(command)
-
-        return  self.__commands
-
+        return self.__commands[0]
 
     def __get_command(self, ix):
+        """
+        Parse the command from the given index.
+        According to type of current Lexeme builds coherent command.
+        :param ix: starts parsing command from this index (int).
+        :return: the Command.
+        """
         lexem = self.__list_lexems[ix]
 
-        if lexem.type() == Lexem_type.ASSIGNMENT:
+        if lexem.type() == Lexeme_type.ASSIGNMENT:
             (name, value) = self.__parse_assignment(lexem)
-            self.__env.set_var_value(name,value)
-            return None
-
-        if lexem.type() == Lexem_type.VAR:
-            pass
-
-        if lexem.type() == Lexem_type.STRING:
+            value = Preprocessor.substitute_vars(value, self.__env)
             self.__cur_ix += 1
-            return self.__parse_command(lexem)
+            return CommandASSIGNMENT(name, value)
 
-        if lexem.type() == Lexem_type.PIPE:
+        if lexem.type() == Lexeme_type.VAR:
+            self.__cur_ix += 1
+            value = Preprocessor.substitute_vars(lexem.value(), self.__env)
+            runnable_value = Lexer().get_lexemes(value)
+            if runnable_value:
+                command_name = runnable_value[0].value()
+            else:
+                raise ParserException('Unexpected token: {}.'.format(lexem.value()))
+            args = self.__parse_args(self.__cur_ix)
+            command = self.__make_certain_command(command_name, args)
+            if command:
+                result = command.run(Stream(), self.__env)
+                result_value = result.get_output()
+                return self.__make_certain_command('echo', [result_value])
+
+        if lexem.type() == Lexeme_type.STRING:
+            self.__cur_ix += 1
+            args = self.__parse_args(self.__cur_ix)
+            value = lexem.value()
+            if lexem.type() == Lexeme_type.STRING:
+                value = Preprocessor.substitute_vars(lexem.value(), self.__env)
+            return self.__make_certain_command(value, args)
+
+        if lexem.type() == Lexeme_type.PIPE:
             self.__cur_ix += 1
             if self.__commands:
                 left_cmd = self.__commands.pop()
             else:
-                raise ParserException('Syntax error near unexpected token {}'.format(lexem.value()))
+                raise ParserException('Syntax error near unexpected token {}'.
+                                      format(lexem.value()))
             right_cmd = self.__get_command(self.__cur_ix)
-            return CommandPipe(left_cmd, right_cmd)
-
+            return CommandPIPE(left_cmd, right_cmd)
         else:
-            raise ParserException('Syntax error near unexpected token {}'.format(lexem.value()))
-
+            raise ParserException('Syntax error near unexpected token {}'.
+                                  format(lexem.value()))
 
     def __parse_assignment(self, lexem):
-        self.__cur_ix += 1
-        [name, value] = lexem.value().split('=')
+        """
+        Parses the variable name and value of the value of the given
+        lexeme value. Splits the input string by the first symbol '='.
+        The lift part is the name of the variable, the right is the value.
+        Raises the ParserException if some part is empty.
+        :param lexem: the value of Lexeme with ASSIGNMENT type (string).
+        :return: pair of name and value of the variable.
+        """
+        ix = lexem.value().find('=')
+        name, value = lexem.value()[0:ix], lexem.value()[ix + 1:]
         if not value:
             raise ParserException('Variable {} has no value.'.format(name))
         elif not name:
             raise ParserException('Unattached definition {}.'.format(value))
-        if value[0] is '$':
-            value = self.__env.get_var_value(value[1:])
         return (name, value)
 
-    def __parse_string(self, ix=None, lexem=None):
-        if lexem:
-            return lexem
-        if ix:
-            lexem = self.__list_lexems[ix].value()
-        return lexem
-        pass
-
-    def __parse_string_with_quotes(self, ix):
-        lexem = self.__list_lexems[ix].value()
-        if lexem[0] is '\'':
-            return lexem
-        if lexem[0] is '\"':
-            changed_lexem = self.__parse_string(lexem=lexem[1:-1])
-            # return ('\"' + changed_lexem + '\"')
-            return (changed_lexem)
-
-    def __parse_var(self, lexem):
-        variable = lexem.value()
-        if variable[0] == '$':
-            variable = variable[1:]
-        return self.__env.get_var_value(variable)
-
-    def __parse_pipe(self, lexem):
-        pass
-
-    def __reading_var_name(self, lexem):
-        pass
-
-    def __parse_command(self, lexem):
+    def __parse_args(self, ix):
+        """
+        Collects arguments for command on position ix till
+        the current index is the last or the PIPE Lexeme appears.
+        :param ix: the index of command (int).
+        :return: the list of arguments.
+        """
+        self.__cur_ix += 1
         args = []
-        ix = self.__cur_ix
-
-        while ix < len(self.__list_lexems) and self.__list_lexems[ix].type() is not Lexem_type.PIPE:
+        if ix >= self.__last_ix:
+            return args
+        lexem = self.__list_lexems[ix]
+        while ix < len(self.__list_lexems) and \
+                self.__list_lexems[ix].type() is not Lexeme_type.PIPE:
             value = lexem.value()
-            if self.__list_lexems[ix].type() is Lexem_type.VAR:
-                value = self.__parse_var(self.__list_lexems[ix])
-            if self.__list_lexems[ix].type() is Lexem_type.STRING:
-                value = self.__parse_string(lexem=self.__list_lexems[ix].value())
-            if self.__list_lexems[ix].type() is Lexem_type.STRING_WITH_QUOTES:
-                value = self.__parse_string_with_quotes(ix)
+            lexem_type = self.__list_lexems[ix].type()
+            if lexem_type in \
+                    [Lexeme_type.VAR, Lexeme_type.STRING, Lexeme_type.STRING_WITH_QUOTES]:
+                value = self.__list_lexems[ix].value()
+                value = Preprocessor.substitute_vars(value, self.__env)
             args.append(value)
             ix += 1
         self.__cur_ix = ix
-        name = lexem.value()
+        return args
+
+    def __make_certain_command(self, name, args):
+        """
+        The very simple prototype of the command fabric.
+        :param name: the name of the command (string).
+        :param args: the list of arguments.
+        :return: Certain command with the given name and rhe given arguments.
+        """
         if name in self.__env.commands:
+            if name == 'wc':
+                return CommandWC(args)
             if name == 'cat':
                 return CommandCAT(args)
             if name == 'echo':

@@ -1,37 +1,29 @@
 """
-An input and output streams that command use.
+The abstraction of input and output streams for command usage.
 """
 
 from io import StringIO
 import os
 
-class InputStream:
-    """ An abstraction of command's input that command gets. """
 
-    def __init__(self, input=None):
-        self.__io_str = StringIO()
-        if input:
-            self.__io_str.write(input)
-
-    def get_value(self):
-        return self.__io_str.getvalue()
-
-
-class OutputStream:
-    """ An abstraction of command's output that contains it's result. """
+class Stream:
+    """
+    The stream that contains input or/and commands executions results.
+    """
 
     def __init__(self):
+        """Creates StringIO for results storage."""
         self.__io_str = StringIO()
 
     def write(self, str):
+        """Writes the input string."""
         self.__io_str.write(str)
 
     def write_line(self, string):
+        """Write the input string with the newline symbol."""
         self.__io_str.write(string)
         self.__io_str.write(os.linesep)
 
     def get_value(self):
+        """Returns current value of the Stream."""
         return self.__io_str.getvalue()
-
-    def convert_to_input(self):
-        return InputStream(self.__io_str.getvalue())
