@@ -81,4 +81,4 @@ class TestParser(unittest.TestCase):
         self.assertRaises(ParserException,
                           self.parser.build_command, lexems[1:2])
         self.assertRaises(ParserException,
-                          self.parser.build_command, Lexeme('$a=10', Lexeme_type.VAR))
+                          self.parser.build_command, [Lexeme('$a=10', Lexeme_type.VAR)])

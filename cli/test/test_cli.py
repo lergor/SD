@@ -9,20 +9,19 @@ class testCli(unittest.TestCase):
 
     def test_commands(self):
         result = self.cli.process_input('echo \'Hello, World!\'')
-        self.assertEqual('Hello, World!', result.get_output())
+        self.assertEqual('Hello, World!' + os.linesep, result.get_output())
         result = self.cli.process_input('echo \'Hello, World!\' | cat')
-        self.assertEqual('Hello, World!', result.get_output())
+        self.assertEqual('Hello, World!' + os.linesep, result.get_output())
 
         self.cli.process_input('FILE=test_text.txt')
         result = self.cli.process_input('cat $FILE test_env.py | wc')
         result = (result.get_output()).split()
-        # - os.linesep
-        right_result = ['29', '109', '904']
+        right_result = ['30', '109', '905']
         self.assertEqual(len(right_result), len(result))
         for i in range(len(result)):
             self.assertEqual(right_result[i], result[i])
         result = self.cli.process_input('pwd')
-        self.assertEqual(os.getcwd(), result.get_output())
+        self.assertEqual(os.getcwd() + os.linesep, result.get_output())
 
     def test_exceptions(self):
         self.cli.process_input('x=exit')

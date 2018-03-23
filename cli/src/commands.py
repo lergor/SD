@@ -190,7 +190,7 @@ class CommandEXIT(Command):
 
 
 class CommandECHO(Command):
-    """ The 'echo' command displays a line of text that came as input."""
+    """ The 'echo' command, displays a line of text that came as input."""
     def __init__(self, args=['']):
         """
         Takes arguments if they are given.
@@ -212,7 +212,7 @@ class CommandECHO(Command):
 
 class CommandWC(Command):
     """
-    The 'wc' command that prints newline, word, and byte counts for each file.
+    The 'wc' prints newline, word, and byte counts for each file.
     """
     def __init__(self, args):
         """
@@ -330,7 +330,7 @@ class UnknownCommand(Command):
 
 class CommandASSIGNMENT(Command):
     """
-    Commands that assigns value to variable, i.e. x=10.
+    Command that assigns value to variable, i.e. x=10.
     """
     def __init__(self, var_name, value):
         """

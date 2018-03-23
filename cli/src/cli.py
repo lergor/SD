@@ -5,6 +5,7 @@ from src.parser import Parser, ParserException
 from src.lexer import Lexer, LexerException
 from src.commands import *
 from src.environment import Environment
+import sys
 
 
 class Cli:
@@ -70,8 +71,8 @@ class Cli:
                 running = False
             except EOFError:
                 running = False
-            # except Exception:
-            #     print('Something wrong, sorry.')
-            #     return
+            except Exception:
+                print('Something wrong, sorry.')
+                return
 
         print('Good bye.')

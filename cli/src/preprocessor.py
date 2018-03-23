@@ -71,7 +71,7 @@ class Preprocessor:
                 in_quotes = input[1:next_ix + 1]
                 ix = in_quotes.find('\'')
                 if ix != -1:
-                    in_quotes = Preprocessor.quotes_in_quotes2(in_quotes, env)
+                    in_quotes = Preprocessor.quotes_in_quotes(in_quotes, env)
                     input = input[next_ix + 1:-1]
                 else:
                     in_quotes = Preprocessor.substitute_vars(in_quotes, env)
@@ -89,7 +89,7 @@ class Preprocessor:
         return result
 
     @staticmethod
-    def quotes_in_quotes2(input, env):
+    def quotes_in_quotes(input, env):
         """
         Processes the string with '\'' quotes within '\"' quotes,
         i.e. when substitution is needed.
