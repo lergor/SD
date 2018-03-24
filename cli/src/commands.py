@@ -208,7 +208,7 @@ class CommandECHO(Command):
         :return: the CommandResult instance with printed arguments.
         """
         output = Stream()
-        output.write_line(' '.join(self.__args))
+        output.write(' '.join(self.__args))
         return CommandResult(output, env, 0)
 
 
@@ -386,6 +386,9 @@ class CommandGREP(Command):
         """
         self.__output = Stream()
         return_value = 0
+        if (not input.get_value() and len(self.__args) <= 1) or (input.get_value() and len(self.__args) < 1):
+            self.__output.write('Wrong number of arguments for grep command.')
+            return CommandResult(self.__output, env, 1)
 
         parser = argparse.ArgumentParser()
         parser.add_argument('-i', '--ignore-case', action='store_true',
@@ -399,20 +402,20 @@ class CommandGREP(Command):
         parser.add_argument('pattern', type=str, metavar='PATTERN')
         if not input.get_value():
             parser.add_argument('file', metavar='FILE',
-                                type=argparse.FileType('r'), nargs='+')
+                                type=str, nargs='+')
         try:
             args = parser.parse_args(self.__args)
         except argparse.ArgumentError as ae:
             msg = 'ArgumentError while \'grep\' running.'
-            self.__output.write_line(msg)
+            self.__output.write(msg)
             return_value = 1
         except argparse.ArgumentTypeError as ate:
             msg = 'ArgumentTypeError while \'grep\' running.'
-            self.__output.write_line(msg)
+            self.__output.write(msg)
             return_value = 1
         except Exception as ex:
             msg = 'Exception {} while \'grep\' running.'.format(str(type(ex)))
-            self.__output.write_line(msg)
+            self.__output.write(msg)
             return_value = 0
         if return_value != 0:
             return CommandResult(self.__output, env, return_value)
@@ -425,21 +428,30 @@ class CommandGREP(Command):
         else:
             self.__pattern = re.compile(pattern)
         if not input.get_value():
+            if not args.file:
+                self.__output.write('grep: no argument FILE.')
+                return CommandResult(self.__output, env, 1)
             for file in args.file:
-                self.__result = ''
-                self.__i = 0
-                lines = file.readlines()
-                self.__lines_after = None
-                for line in lines:
-                    self.process_string(line, len(lines))
-                file.close()
+                file_path = os.path.join(env.get_cwd(), file)
+                if not os.path.isfile(file_path):
+                    self.__output.write('grep: {}: No such file or directory.'.
+                                             format(file))
+                    return CommandResult(self.__output, env, 1)
+
+                with open(file, 'r') as f:
+                    self.__result = ''
+                    self.__i = 0
+                    lines = f.readlines()
+                    self.__lines_after = None
+                    for line in lines:
+                        self.process_string(line, len(lines))
         else:
             lines = input.get_value().split(os.linesep)
             self.__result = ''
             self.__i = 0
             self.__lines_after = None
             for line in lines:
-                result = self.process_string(line, len(lines))
+                self.process_string(line, len(lines))
         return CommandResult(self.__output, env, return_value)
 
     def process_string(self, line, length_lines):

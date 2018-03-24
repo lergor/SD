@@ -68,12 +68,12 @@ class TestAllCommands(unittest.TestCase):
         command = CommandECHO(['testing', 'command', 'echo'])
         result = command.run(Stream(), self.env)
         self.assertEqual(0, result.return_value())
-        self.assertEqual('testing command echo' + os.linesep, result.get_output())
+        self.assertEqual('testing command echo', result.get_output())
 
         command = CommandECHO()
         result = command.run(Stream(), self.env)
         self.assertEqual(0, result.return_value())
-        self.assertEqual(os.linesep, result.get_output())
+        self.assertEqual('', result.get_output())
 
     def test_cat(self):
         command = CommandCAT([self.file])
@@ -144,6 +144,18 @@ class TestAllCommands(unittest.TestCase):
                                 os.linesep, os.linesep, os.linesep),
                          result.get_output())
 
+        command = CommandGREP(['pattern'])
+        result = command.run(Stream(), self.env)
+        self.assertEqual(1, result.return_value())
+        self.assertEqual('Wrong number of arguments for grep command.',
+                         result.get_output())
+
+        command = CommandGREP(['pattern', 'other_file.txt'])
+        result = command.run(Stream(), self.env)
+        self.assertEqual(1, result.return_value())
+        self.assertEqual('grep: other_file.txt: No such file or directory.',
+                         result.get_output())
+
 
     def test_pipe(self):
             left_command = CommandECHO(['word1', 'word2', 'word3'])
@@ -188,5 +200,12 @@ class TestAllCommands(unittest.TestCase):
             result = pipe.run(Stream(), self.env)
             self.assertEqual(0, result.return_value())
             self.assertEqual('\x1b[1;31mkek\x1b[0m1 \x1b[1;31mkek\x1b[0m2 \x1b[1;31mkek\x1b[0m3',
+                             result.get_output())
+
+            right_command = CommandGREP([])
+            pipe = CommandPIPE(left_command, right_command)
+            result = pipe.run(Stream(), self.env)
+            self.assertEqual(1, result.return_value())
+            self.assertEqual('Wrong number of arguments for grep command.',
                              result.get_output())
 
