@@ -14,7 +14,6 @@ class Environment:
         Sets list of available commands,
         the empty dictionary as storage and current working directory.
         """
-        self.commands = ['cat', 'echo', 'exit', 'pwd', 'wc']
         self.__vars_values = dict()
         self.__current_working_directory = os.getcwd()
 
@@ -28,4 +27,4 @@ class Environment:
 
     def get_cwd(self):
         """Returns the current working directory."""
-        return str(self.__current_working_directory)
+        return self.__current_working_directory
