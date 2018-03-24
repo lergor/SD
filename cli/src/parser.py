@@ -137,7 +137,8 @@ class Parser:
         :param args: the list of arguments.
         :return: Certain command with the given name and rhe given arguments.
         """
-        if name in self.__env.commands:
+        self.commands = ['cat', 'echo', 'exit', 'pwd', 'wc', 'grep']
+        if name in self.commands:
             if name == 'wc':
                 return CommandWC(args)
             if name == 'cat':
@@ -148,4 +149,6 @@ class Parser:
                 return CommandPWD(args)
             if name == 'exit':
                 return CommandEXIT(args)
+            if name == 'grep':
+                return CommandGREP(args)
         return UnknownCommand(name, args)

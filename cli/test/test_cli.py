@@ -16,7 +16,7 @@ class testCli(unittest.TestCase):
         self.cli.process_input('FILE=test_text.txt')
         result = self.cli.process_input('cat $FILE test_env.py | wc')
         result = (result.get_output()).split()
-        right_result = ['30', '109', '905']
+        right_result = ['31', '110', '906']
         self.assertEqual(len(right_result), len(result))
         for i in range(len(result)):
             self.assertEqual(right_result[i], result[i])
