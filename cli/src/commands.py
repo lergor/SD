@@ -9,6 +9,8 @@ from abc import ABCMeta, abstractmethod
 import sys
 import subprocess
 from src.iostreams import *
+import argparse
+import re
 
 
 class ExitException(Exception):
@@ -206,7 +208,7 @@ class CommandECHO(Command):
         :return: the CommandResult instance with printed arguments.
         """
         output = Stream()
-        output.write_line(' '.join(self.__args))
+        output.write(' '.join(self.__args))
         return CommandResult(output, env, 0)
 
 
@@ -353,3 +355,142 @@ class CommandASSIGNMENT(Command):
         return_value = 0
         env.set_var_value(self.__var_name, self.__value)
         return CommandResult(input, env, return_value)
+
+
+class CommandGREP(Command):
+    """
+    Prints lines matching a pattern. Available keys:
+    -i, --ignore-case
+              Ignore case distinctions, so that characters that differ only in
+              case match each other.
+    -w, --word-regexp
+              Select  only  those  lines  containing  matches  that form whole
+              words.
+    -A NUM, --after-context=NUM
+              Print  NUM  lines  of  trailing  context  after  matching lines.
+    """
+    def __init__(self, args):
+        """
+        Takes arguments if they are given.
+        :param args: list of arguments.
+        """
+        self.__args = args
+
+    def run(self, input, env):
+        """
+        Takes the input Stream and the environment.
+
+        :param input: the Stream instance with previous results.
+        :param env: the Environment instance with variables.
+        :return: the CommandResult instance with the changed environment.
+        """
+        self.__output = Stream()
+        return_value = 0
+        if (not input.get_value() and len(self.__args) <= 1) or (input.get_value() and len(self.__args) < 1):
+            self.__output.write('Wrong number of arguments for grep command.')
+            return CommandResult(self.__output, env, 1)
+
+        parser = argparse.ArgumentParser()
+        parser.add_argument('-i', '--ignore-case', action='store_true',
+                            help='Ignore case distinctions, so that characters'
+                                 ' that differ only in case match each other.')
+        parser.add_argument('-w', '--word-regexp', action='store_true',
+                            help='Select  only  those  lines  containing '
+                                 'matches that form whole words.')
+        parser.add_argument('-A', '--after-context', metavar='NUM', type=int,
+                            help='increase output verbosity')
+        parser.add_argument('pattern', type=str, metavar='PATTERN')
+        if not input.get_value():
+            parser.add_argument('file', metavar='FILE',
+                                type=str, nargs='+')
+        try:
+            args = parser.parse_args(self.__args)
+        except argparse.ArgumentError as ae:
+            msg = 'ArgumentError while \'grep\' running.'
+            self.__output.write(msg)
+            return_value = 1
+        except argparse.ArgumentTypeError as ate:
+            msg = 'ArgumentTypeError while \'grep\' running.'
+            self.__output.write(msg)
+            return_value = 1
+        except Exception as ex:
+            msg = 'Exception {} while \'grep\' running.'.format(str(type(ex)))
+            self.__output.write(msg)
+            return_value = 0
+        if return_value != 0:
+            return CommandResult(self.__output, env, return_value)
+        self.__args = args
+        pattern = args.pattern
+        if args.word_regexp:
+            pattern = '{} '.format(pattern)
+        if args.ignore_case:
+            self.__pattern = re.compile(pattern, re.IGNORECASE)
+        else:
+            self.__pattern = re.compile(pattern)
+        if not input.get_value():
+            if not args.file:
+                self.__output.write('grep: no argument FILE.')
+                return CommandResult(self.__output, env, 1)
+            for file in args.file:
+                file_path = os.path.join(env.get_cwd(), file)
+                if not os.path.isfile(file_path):
+                    self.__output.write('grep: {}: No such file or directory.'.
+                                             format(file))
+                    return CommandResult(self.__output, env, 1)
+
+                with open(file, 'r') as f:
+                    self.__result = ''
+                    self.__i = 0
+                    lines = f.readlines()
+                    self.__lines_after = None
+                    for line in lines:
+                        self.process_string(line, len(lines))
+        else:
+            lines = input.get_value().split(os.linesep)
+            self.__result = ''
+            self.__i = 0
+            self.__lines_after = None
+            for line in lines:
+                self.process_string(line, len(lines))
+        return CommandResult(self.__output, env, return_value)
+
+    def process_string(self, line, length_lines):
+        """
+        Searches the pattern the given string.
+        :param line: the string where pattern is searching.
+        :param length_lines: length of all lines to check if the given is the last.
+        """
+        self.__i += 1
+        result_line = ''
+        self.__ix = 0
+        while True:
+            string = line[self.__ix:]
+            matched = self.__pattern.search(string)
+            if not matched:
+                break
+            else:
+                self.__lines_after = self.__args.after_context
+                self.__ix += matched.end()
+                if self.__args.word_regexp:
+                    self.__ix -= 1
+                result_line += string[:matched.start()]
+                finded = matched.group()
+                if self.__args.word_regexp:
+                    finded = finded[:-1]
+                    if not line[matched.start() - 1].isspace():
+                        self.__result += finded
+                        continue
+                result_line += '\x1b[1;31m{}\x1b[0m'.format(finded)
+        if result_line:
+            result_line += line[self.__ix:]
+            self.__result += result_line
+            if self.__lines_after:
+                self.__lines_after = self.__args.after_context
+        else:
+            if self.__lines_after and self.__lines_after > 0:
+                self.__lines_after -= 1
+                self.__result += line
+                if self.__lines_after == 0 and self.__i < length_lines:
+                    self.__result += '\x1b[0;34m---\x1b[0m' + os.linesep
+        self.__output.write(self.__result)
+        self.__result = ''

@@ -52,7 +52,7 @@ class TestAllCommands(unittest.TestCase):
         result = command.run(Stream(), self.env)
         self.assertEqual(0, result.return_value())
         result = result.get_output().split()
-        right_result = ['9', '60', '283', self.file]
+        right_result = ['10', '60', '284', self.file]
         self.assertEqual(len(right_result), len(result))
         for i in range(len(result)):
             self.assertEqual(right_result[i], result[i])
@@ -68,12 +68,12 @@ class TestAllCommands(unittest.TestCase):
         command = CommandECHO(['testing', 'command', 'echo'])
         result = command.run(Stream(), self.env)
         self.assertEqual(0, result.return_value())
-        self.assertEqual('testing command echo' + os.linesep, result.get_output())
+        self.assertEqual('testing command echo', result.get_output())
 
         command = CommandECHO()
         result = command.run(Stream(), self.env)
         self.assertEqual(0, result.return_value())
-        self.assertEqual(os.linesep, result.get_output())
+        self.assertEqual('', result.get_output())
 
     def test_cat(self):
         command = CommandCAT([self.file])
@@ -90,39 +90,122 @@ class TestAllCommands(unittest.TestCase):
             format(os.linesep)
         self.assertEqual(right, result.get_output())
 
+    def test_grep(self):
+        command = CommandGREP(['Son', self.file])
+        result = command.run(Stream(), self.env)
+        self.assertEqual(0, result.return_value())
+        self.assertEqual('The Perfect \x1b[1;31mSon\x1b[0m.' + os.linesep, result.get_output())
+
+        command = CommandGREP(['-i', 'DOES', self.file])
+        result = command.run(Stream(), self.env)
+        self.assertEqual(0, result.return_value())
+        self.assertEqual('B: \x1b[1;31mDoes\x1b[0m he smoke?{}'
+                         'A: No, he \x1b[1;31mdoes\x1b[0mn\'t.{}'
+                         'B: \x1b[1;31mDoes\x1b[0m he drink whiskey?{}'
+                         'A: No, he \x1b[1;31mdoes\x1b[0mn\'t.{}'
+                         'B: \x1b[1;31mDoes\x1b[0m he ever come home late?{}'
+                         'A: No, he \x1b[1;31mdoes\x1b[0mn\'t.{}'.
+                         format(os.linesep, os.linesep, os.linesep,
+                                os.linesep, os.linesep, os.linesep),
+                         result.get_output())
+
+        command = CommandGREP(['-A', '1', 'have', self.file])
+        result = command.run(Stream(), self.env)
+        self.assertEqual(0, result.return_value())
+        self.assertEqual('A: I \x1b[1;31mhave\x1b[0m the perfect son.{}'
+                         'B: Does he smoke?{}'
+                         '\x1b[0;34m---\x1b[0m{}'
+                         'B: I guess you really do \x1b[1;31mhave\x1b[0m '
+                         'the perfect son. How old is he?{}'
+                         'A: He will be six months old next Wednesday.{}'.
+                         format(os.linesep, os.linesep, os.linesep, os.linesep, os.linesep),
+                         result.get_output())
+
+        command = CommandGREP(['-iw', 'does', self.file])
+        result = command.run(Stream(), self.env)
+        self.assertEqual(0, result.return_value())
+        self.assertEqual('B: \x1b[1;31mDoes\x1b[0m he smoke?{}'
+                         'B: \x1b[1;31mDoes\x1b[0m he drink whiskey?{}'
+                         'B: \x1b[1;31mDoes\x1b[0m he ever come home late?{}'.
+                         format(os.linesep, os.linesep, os.linesep),
+                         result.get_output())
+
+        command = CommandGREP(['-iwA', '2', 'HAVE', self.file])
+        result = command.run(Stream(), self.env)
+        self.assertEqual(0, result.return_value())
+        self.assertEqual('A: I \x1b[1;31mhave\x1b[0m the perfect son.{}'
+                         'B: Does he smoke?{}'
+                         'A: No, he doesn\'t.{}'
+                         '\x1b[0;34m---\x1b[0m{}'
+                         'B: I guess you really do \x1b[1;31mhave\x1b[0m '
+                         'the perfect son. How old is he?{}'
+                         'A: He will be six months old next Wednesday.{}'.
+                         format(os.linesep, os.linesep, os.linesep,
+                                os.linesep, os.linesep, os.linesep),
+                         result.get_output())
+
+        command = CommandGREP(['pattern'])
+        result = command.run(Stream(), self.env)
+        self.assertEqual(1, result.return_value())
+        self.assertEqual('Wrong number of arguments for grep command.',
+                         result.get_output())
+
+        command = CommandGREP(['pattern', 'other_file.txt'])
+        result = command.run(Stream(), self.env)
+        self.assertEqual(1, result.return_value())
+        self.assertEqual('grep: other_file.txt: No such file or directory.',
+                         result.get_output())
+
+
     def test_pipe(self):
-        left_command = CommandECHO(['word1', 'word2', 'word3'])
-        right_command = CommandCAT([])
-        first_pipe = CommandPIPE(left_command, right_command)
-        result = first_pipe.run(Stream(), self.env)
-        self.assertEqual(0, result.return_value())
-        self.assertEqual('word1 word2 word3' + os.linesep, result.get_output())
+            left_command = CommandECHO(['word1', 'word2', 'word3'])
+            right_command = CommandCAT([])
+            first_pipe = CommandPIPE(left_command, right_command)
+            result = first_pipe.run(Stream(), self.env)
+            self.assertEqual(0, result.return_value())
+            self.assertEqual('word1 word2 word3' + os.linesep, result.get_output())
 
-        right_command = CommandWC([])
-        second_pipe = CommandPIPE(first_pipe, right_command)
-        result = second_pipe.run(Stream(), self.env)
-        self.assertEqual(0, result.return_value())
-        result = result.get_output().split()
-        right_result = ['1', '3', '18']
-        self.assertEqual(len(right_result), len(result))
-        for i in range(len(result)):
-            self.assertEqual(right_result[i], result[i])
+            right_command = CommandWC([])
+            second_pipe = CommandPIPE(first_pipe, right_command)
+            result = second_pipe.run(Stream(), self.env)
+            self.assertEqual(0, result.return_value())
+            result = result.get_output().split()
+            right_result = ['1', '3', '18']
+            self.assertEqual(len(right_result), len(result))
+            for i in range(len(result)):
+                self.assertEqual(right_result[i], result[i])
 
-        left_command = CommandCAT([self.file, 'test_env.py'])
-        right_command = CommandPWD([])
-        first_pipe = CommandPIPE(left_command, right_command)
-        result = first_pipe.run(Stream(), self.env)
-        self.assertEqual(0, result.return_value())
-        self.assertEqual(str(os.getcwd() + os.linesep), result.get_output())
+            left_command = CommandCAT([self.file, 'test_env.py'])
+            right_command = CommandPWD([])
+            first_pipe = CommandPIPE(left_command, right_command)
+            result = first_pipe.run(Stream(), self.env)
+            self.assertEqual(0, result.return_value())
+            self.assertEqual(str(os.getcwd() + os.linesep), result.get_output())
 
-        right_command = CommandWC([self.file, 'test_env.py'])
-        second_pipe = CommandPIPE(first_pipe, right_command)
-        result = second_pipe.run(Stream(), self.env)
-        self.assertEqual(0, result.return_value())
-        result = result.get_output().split()
-        right_result = ['9', '60', '283', self.file,
-                        '21', '50', '622', 'test_env.py',
-                        '30', '110', '905', 'total']
-        self.assertEqual(len(right_result), len(result))
-        for i in range(len(result)):
-            self.assertEqual(right_result[i], result[i])
+            right_command = CommandWC([self.file, 'test_env.py'])
+            second_pipe = CommandPIPE(first_pipe, right_command)
+            result = second_pipe.run(Stream(), self.env)
+            self.assertEqual(0, result.return_value())
+            result = result.get_output().split()
+            right_result = ['10', '60', '284', self.file,
+                            '21', '50', '622', 'test_env.py',
+                            '31', '110', '906', 'total']
+            self.assertEqual(len(right_result), len(result))
+            for i in range(len(result)):
+                self.assertEqual(right_result[i], result[i])
+
+            left_command = CommandECHO(['kek1', 'kek2', 'kek3'])
+            right_command = CommandGREP(['kek'])
+            pipe = CommandPIPE(left_command, right_command)
+            result = pipe.run(Stream(), self.env)
+            self.assertEqual(0, result.return_value())
+            self.assertEqual('\x1b[1;31mkek\x1b[0m1 \x1b[1;31mkek\x1b[0m2 \x1b[1;31mkek\x1b[0m3',
+                             result.get_output())
+
+            right_command = CommandGREP([])
+            pipe = CommandPIPE(left_command, right_command)
+            result = pipe.run(Stream(), self.env)
+            self.assertEqual(1, result.return_value())
+            self.assertEqual('Wrong number of arguments for grep command.',
+                             result.get_output())
+
