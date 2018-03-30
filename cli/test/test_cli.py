@@ -9,7 +9,7 @@ class testCli(unittest.TestCase):
 
     def test_commands(self):
         result = self.cli.process_input('echo \'Hello, World!\'')
-        self.assertEqual('Hello, World!', result.get_output())
+        self.assertEqual('Hello, World!' + os.linesep, result.get_output())
         result = self.cli.process_input('echo \'Hello, World!\' | cat')
         self.assertEqual('Hello, World!' + os.linesep, result.get_output())
 

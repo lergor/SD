@@ -208,7 +208,7 @@ class CommandECHO(Command):
         :return: the CommandResult instance with printed arguments.
         """
         output = Stream()
-        output.write(' '.join(self.__args))
+        output.write_line(' '.join(self.__args))
         return CommandResult(output, env, 0)
 
 
@@ -387,7 +387,7 @@ class CommandGREP(Command):
         self.__output = Stream()
         return_value = 0
         if (not input.get_value() and len(self.__args) <= 1) or (input.get_value() and len(self.__args) < 1):
-            self.__output.write('Wrong number of arguments for grep command.')
+            self.__output.write_line('Wrong number of arguments for grep command.')
             return CommandResult(self.__output, env, 1)
 
         parser = argparse.ArgumentParser()
@@ -407,15 +407,15 @@ class CommandGREP(Command):
             args = parser.parse_args(self.__args)
         except argparse.ArgumentError as ae:
             msg = 'ArgumentError while \'grep\' running.'
-            self.__output.write(msg)
+            self.__output.write_line(msg)
             return_value = 1
         except argparse.ArgumentTypeError as ate:
             msg = 'ArgumentTypeError while \'grep\' running.'
-            self.__output.write(msg)
+            self.__output.write_line(msg)
             return_value = 1
         except Exception as ex:
             msg = 'Exception {} while \'grep\' running.'.format(str(type(ex)))
-            self.__output.write(msg)
+            self.__output.write_line(msg)
             return_value = 0
         if return_value != 0:
             return CommandResult(self.__output, env, return_value)
@@ -429,12 +429,12 @@ class CommandGREP(Command):
             self.__pattern = re.compile(pattern)
         if not input.get_value():
             if not args.file:
-                self.__output.write('grep: no argument FILE.')
+                self.__output.write_line('grep: no argument FILE.')
                 return CommandResult(self.__output, env, 1)
             for file in args.file:
                 file_path = os.path.join(env.get_cwd(), file)
                 if not os.path.isfile(file_path):
-                    self.__output.write('grep: {}: No such file or directory.'.
+                    self.__output.write_line('grep: {}: No such file or directory.'.
                                              format(file))
                     return CommandResult(self.__output, env, 1)
 
@@ -452,6 +452,7 @@ class CommandGREP(Command):
             self.__lines_after = None
             for line in lines:
                 self.process_string(line, len(lines))
+            self.__output.write_line('')
         return CommandResult(self.__output, env, return_value)
 
     def process_string(self, line, length_lines):

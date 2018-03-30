@@ -74,13 +74,13 @@ class TestAllCommands(unittest.TestCase):
         command.set_args(['testing', 'command', 'echo'])
         result = command.run(Stream(), self.env)
         self.assertEqual(0, result.return_value())
-        self.assertEqual('testing command echo', result.get_output())
+        self.assertEqual('testing command echo' + os.linesep, result.get_output())
 
         command = CommandECHO()
         command.set_args()
         result = command.run(Stream(), self.env)
         self.assertEqual(0, result.return_value())
-        self.assertEqual('', result.get_output())
+        self.assertEqual(os.linesep, result.get_output())
 
     def test_cat(self):
         command = CommandCAT()
@@ -162,14 +162,14 @@ class TestAllCommands(unittest.TestCase):
         command.set_args(['pattern'])
         result = command.run(Stream(), self.env)
         self.assertEqual(1, result.return_value())
-        self.assertEqual('Wrong number of arguments for grep command.',
+        self.assertEqual('Wrong number of arguments for grep command.' + os.linesep,
                          result.get_output())
 
         command = CommandGREP()
         command.set_args(['pattern', 'other_file.txt'])
         result = command.run(Stream(), self.env)
         self.assertEqual(1, result.return_value())
-        self.assertEqual('grep: other_file.txt: No such file or directory.',
+        self.assertEqual('grep: other_file.txt: No such file or directory.' + os.linesep,
                          result.get_output())
 
     def test_pipe(self):
@@ -222,7 +222,8 @@ class TestAllCommands(unittest.TestCase):
             pipe = CommandPIPE(left_command, right_command)
             result = pipe.run(Stream(), self.env)
             self.assertEqual(0, result.return_value())
-            self.assertEqual('\x1b[1;31mkek\x1b[0m1 \x1b[1;31mkek\x1b[0m2 \x1b[1;31mkek\x1b[0m3',
+            self.assertEqual('\x1b[1;31mkek\x1b[0m1 \x1b[1;31mkek\x1b[0m2'
+                             ' \x1b[1;31mkek\x1b[0m3' + os.linesep,
                              result.get_output())
 
             right_command = CommandGREP()
@@ -230,5 +231,5 @@ class TestAllCommands(unittest.TestCase):
             pipe = CommandPIPE(left_command, right_command)
             result = pipe.run(Stream(), self.env)
             self.assertEqual(1, result.return_value())
-            self.assertEqual('Wrong number of arguments for grep command.',
-                             result.get_output())
+            self.assertEqual('Wrong number of arguments for grep '
+                             'command.' + os.linesep, result.get_output())
