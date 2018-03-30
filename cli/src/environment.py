@@ -27,4 +27,4 @@ class Environment:
 
     def get_cwd(self):
         """Returns the current working directory."""
-        return str(self.__current_working_directory)
+        return self.__current_working_directory

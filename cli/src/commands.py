@@ -104,9 +104,9 @@ class CommandCAT(Command):
     on the standard output. May has one and more arguments and
     even zero if placed on the right from PIPE.
     """
-    def __init__(self, args):
+    def set_args(self, args):
         """
-        Takes arguments if they are given.
+        Takes and sets arguments if they are given.
         :param args: list with file names.
         """
         self.__args = args
@@ -142,9 +142,9 @@ class CommandPWD(Command):
     """
     The 'pwd' command prints name of current/working directory.
     """
-    def __init__(self, args):
+    def set_args(self, args):
         """
-        Takes arguments if they are given.
+        Takes and sets arguments if they are given.
         :param args: list of arguments.
         """
         self.__args = args
@@ -175,9 +175,9 @@ class CommandEXIT(Command):
     Raises ExitException that will be catched
     in the main loop of program in the Cli class.
     """
-    def __init__(self, args):
+    def set_args(self, args):
         """
-        Takes arguments if they are given.
+        Takes and sets arguments if they are given.
         :param args: list of arguments.
         """
         self.__args = args
@@ -193,9 +193,9 @@ class CommandEXIT(Command):
 
 class CommandECHO(Command):
     """ The 'echo' command, displays a line of text that came as input."""
-    def __init__(self, args=['']):
+    def set_args(self, args=['']):
         """
-        Takes arguments if they are given.
+        Takes and sets arguments if they are given.
         :param args: list of arguments.
         """
         self.__args = args
@@ -216,9 +216,9 @@ class CommandWC(Command):
     """
     The 'wc' prints newline, word, and byte counts for each file.
     """
-    def __init__(self, args):
+    def set_args(self, args):
         """
-        Takes arguments if they are given.
+        Takes and sets arguments if they are given.
         :param args: list of arguments.
         """
         self.__args = args
@@ -369,9 +369,9 @@ class CommandGREP(Command):
     -A NUM, --after-context=NUM
               Print  NUM  lines  of  trailing  context  after  matching lines.
     """
-    def __init__(self, args):
+    def set_args(self, args):
         """
-        Takes arguments if they are given.
+        Takes and sets arguments if they are given.
         :param args: list of arguments.
         """
         self.__args = args

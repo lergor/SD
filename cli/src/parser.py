@@ -137,18 +137,12 @@ class Parser:
         :param args: the list of arguments.
         :return: Certain command with the given name and rhe given arguments.
         """
-        self.commands = ['cat', 'echo', 'exit', 'pwd', 'wc', 'grep']
-        if name in self.commands:
-            if name == 'wc':
-                return CommandWC(args)
-            if name == 'cat':
-                return CommandCAT(args)
-            if name == 'echo':
-                return CommandECHO(args)
-            if name == 'pwd':
-                return CommandPWD(args)
-            if name == 'exit':
-                return CommandEXIT(args)
-            if name == 'grep':
-                return CommandGREP(args)
+        self.__commands_list = {'cat': CommandCAT, 'echo': CommandECHO,
+                                'exit': CommandEXIT, 'pwd': CommandPWD,
+                                'wc': CommandWC, 'grep': CommandGREP}
+        command_cls = self.__commands_list.get(name, None)
+        if command_cls:
+            command_cls = command_cls()
+            command_cls.set_args(args)
+            return command_cls
         return UnknownCommand(name, args)
