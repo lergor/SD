@@ -9,13 +9,13 @@ class TestLexer(unittest.TestCase):
         self.lexer = Lexer()
 
     def test_var(self):
-        lexems = self.lexer.get_lexemes('$a $a_a $v_2')
-        self.assertEqual(len(lexems), 3)
-        for lexem in lexems:
+        lexemes = self.lexer.get_lexemes('$a $a_a $v_2')
+        self.assertEqual(len(lexemes), 3)
+        for lexem in lexemes:
             self.assertEqual(lexem.type(), Lexeme_type.VAR)
-        self.assertEqual('$a', lexems[0].value())
-        self.assertEqual('$a_a', lexems[1].value())
-        self.assertEqual('$v_2', lexems[2].value())
+        self.assertEqual('$a', lexemes[0].value())
+        self.assertEqual('$a_a', lexemes[1].value())
+        self.assertEqual('$v_2', lexemes[2].value())
 
     def test_string_with_quotes(self):
         lexems = self.lexer.get_lexemes(
@@ -83,7 +83,7 @@ class TestLexer(unittest.TestCase):
         self.assertEqual('a=10', lexems[6].value())
         self.assertEqual('$var_1', lexems[8].value())
 
-    def test_extra(self):
+    def test_single_quotes_in_single_quotes(self):
         lexems = self.lexer.get_lexemes('echo \'aaa\'aa\'aaa\'')
         self.assertEqual(2, len(lexems))
         self.assertEqual(Lexeme_type.STRING, lexems[0].type())
@@ -91,6 +91,7 @@ class TestLexer(unittest.TestCase):
         self.assertEqual(Lexeme_type.STRING_WITH_QUOTES, lexems[1].type())
         self.assertEqual('\'aaa\'aa\'aaa\'', lexems[1].value())
 
+    def test_one_single_quote_in_text(self):
         lexems = self.lexer.get_lexemes('aaa\'aa')
         self.assertEqual(1, len(lexems))
         self.assertEqual('aaa\'aa', lexems[0].value())

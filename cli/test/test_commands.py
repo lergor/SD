@@ -7,7 +7,6 @@ from src.environment import Environment
 class TestAllCommands(unittest.TestCase):
 
     def setUp(self):
-        self.exited = False
         self.env = Environment()
         self.file = 'test_text.txt'
 
@@ -17,6 +16,7 @@ class TestAllCommands(unittest.TestCase):
         self.assertEqual(0, result.return_value())
         self.assertEqual('hello' + os.linesep, result.get_output())
 
+    def test_unknown_fail(self):
         command = UnknownCommand('kek', [])
         result = command.run(Stream(), self.env)
         self.assertEqual(1, result.return_value())
@@ -36,6 +36,7 @@ class TestAllCommands(unittest.TestCase):
         self.assertEqual(0, result.return_value())
         self.assertEqual(str(os.getcwd()) + os.linesep, result.get_output())
 
+    def test_pwd_fail(self):
         command = CommandPWD(['x', 'ololo'])
         result = command.run(Stream(), self.env)
         self.assertEqual(result.return_value(), 1)
@@ -57,6 +58,7 @@ class TestAllCommands(unittest.TestCase):
         for i in range(len(result)):
             self.assertEqual(right_result[i], result[i])
 
+    def test_wc_fail(self):
         file = 'not_funny.txt'
         command = CommandWC([file])
         result = command.run(Stream(), self.env)
@@ -70,6 +72,7 @@ class TestAllCommands(unittest.TestCase):
         self.assertEqual(0, result.return_value())
         self.assertEqual('testing command echo' + os.linesep, result.get_output())
 
+    def test_empty_echo(self):
         command = CommandECHO()
         result = command.run(Stream(), self.env)
         self.assertEqual(0, result.return_value())
@@ -83,6 +86,7 @@ class TestAllCommands(unittest.TestCase):
         self.assertEqual(0, result.return_value())
         self.assertEqual(answer, result.get_output())
 
+    def test_cat_fail(self):
         command = CommandCAT(['not_funny.txt'])
         result = command.run(Stream(), self.env)
         self.assertEqual(1, result.return_value())
@@ -90,7 +94,7 @@ class TestAllCommands(unittest.TestCase):
             format(os.linesep)
         self.assertEqual(right, result.get_output())
 
-    def test_pipe(self):
+    def test_echo_pipe_cat(self):
         left_command = CommandECHO(['word1', 'word2', 'word3'])
         right_command = CommandCAT([])
         first_pipe = CommandPIPE(left_command, right_command)
@@ -98,6 +102,10 @@ class TestAllCommands(unittest.TestCase):
         self.assertEqual(0, result.return_value())
         self.assertEqual('word1 word2 word3' + os.linesep, result.get_output())
 
+    def test_echo_pipe_cat_pipe_wc(self):
+        left_command = CommandECHO(['word1', 'word2', 'word3'])
+        right_command = CommandCAT([])
+        first_pipe = CommandPIPE(left_command, right_command)
         right_command = CommandWC([])
         second_pipe = CommandPIPE(first_pipe, right_command)
         result = second_pipe.run(Stream(), self.env)
@@ -108,6 +116,7 @@ class TestAllCommands(unittest.TestCase):
         for i in range(len(result)):
             self.assertEqual(right_result[i], result[i])
 
+    def test_cat_pipe_pwd(self):
         left_command = CommandCAT([self.file, 'test_env.py'])
         right_command = CommandPWD([])
         first_pipe = CommandPIPE(left_command, right_command)
@@ -115,6 +124,10 @@ class TestAllCommands(unittest.TestCase):
         self.assertEqual(0, result.return_value())
         self.assertEqual(str(os.getcwd() + os.linesep), result.get_output())
 
+    def test_cat_pipe_pwd_pipe_wc(self):
+        left_command = CommandCAT([self.file, 'test_env.py'])
+        right_command = CommandPWD([])
+        first_pipe = CommandPIPE(left_command, right_command)
         right_command = CommandWC([self.file, 'test_env.py'])
         second_pipe = CommandPIPE(first_pipe, right_command)
         result = second_pipe.run(Stream(), self.env)
