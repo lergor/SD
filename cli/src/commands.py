@@ -22,6 +22,7 @@ class CommandResult:
     the result of command.
     Contains the input, the environment and the return flag.
     """
+
     def __init__(self, output, env, return_value=0):
         """
         :param output: the Stream instance with command result.
@@ -52,6 +53,7 @@ class Command(metaclass=ABCMeta):
     The common class for all commands.
     Contains method 'run' that starts executions.
     """
+
     @abstractmethod
     def run(self, input, env):
         return NotImplemented
@@ -62,6 +64,7 @@ class CommandPIPE(Command):
     The abstract of PIPE that takes left command's output
     and redirect it to the right command as input stream.
     """
+
     def __init__(self, left, right):
         """
         Takes left and right commands.
@@ -89,8 +92,8 @@ class CommandPIPE(Command):
 
         changed_input = Stream()
         output = result_of_left.get_output()
-        if output[-1] == os.linesep:
-            output = output[0:-1]
+        if output.endswith(os.linesep):
+            output = output[0:-(len(os.linesep))]
         changed_input.write_line(output)
         changed_env = result_of_left.get_env()
         return self.__right_cmd.run(changed_input, changed_env)
@@ -102,6 +105,7 @@ class CommandCAT(Command):
     on the standard output. May has one and more arguments and
     even zero if placed on the right from PIPE.
     """
+
     def __init__(self, args):
         """
         Takes arguments if they are given.
@@ -128,7 +132,7 @@ class CommandCAT(Command):
                 file_path = os.path.join(env.get_cwd(), file)
                 if not os.path.isfile(file_path):
                     self.__output.write_line('cat: {}: No such file or directory.'.
-                                        format(file))
+                                             format(file))
                     return_value = 1
                     break
                 with open(file, 'r') as opened_file:
@@ -140,6 +144,7 @@ class CommandPWD(Command):
     """
     The 'pwd' command prints name of current/working directory.
     """
+
     def __init__(self, args):
         """
         Takes arguments if they are given.
@@ -159,7 +164,7 @@ class CommandPWD(Command):
         return_value = 0
         if self.__args:
             self.__output.write_line('Wrong number of arguments for pwd command:'
-                                ' expected 0, got {}.'.format(len(self.__args)))
+                                     ' expected 0, got {}.'.format(len(self.__args)))
             return_value = 1
             return CommandResult(self.__output, env, return_value)
 
@@ -173,6 +178,7 @@ class CommandEXIT(Command):
     Raises ExitException that will be catched
     in the main loop of program in the Cli class.
     """
+
     def __init__(self, args):
         """
         Takes arguments if they are given.
@@ -191,6 +197,7 @@ class CommandEXIT(Command):
 
 class CommandECHO(Command):
     """ The 'echo' command, displays a line of text that came as input."""
+
     def __init__(self, args=['']):
         """
         Takes arguments if they are given.
@@ -214,6 +221,7 @@ class CommandWC(Command):
     """
     The 'wc' prints newline, word, and byte counts for each file.
     """
+
     def __init__(self, args):
         """
         Takes arguments if they are given.
@@ -228,13 +236,9 @@ class CommandWC(Command):
         :return: list with three counts.
         """
         lines = input.split(os.linesep)
-        line_count = len(lines) - 1
-        if len(lines) == 1:
-            line_count = 1
-        word_count = 0
-        for line in lines:
-            word_count += len(line.split())
-        char_count = len(input.encode(sys.stdin.encoding))
+        line_count = max(len(lines) - 1, 1)
+        word_count = len(input.split())
+        char_count = len(input.replace(os.linesep, '\n'))
         return [line_count, word_count, char_count]
 
     def run(self, input, env):
@@ -258,7 +262,7 @@ class CommandWC(Command):
                 file_path = os.path.join(env.get_cwd(), file)
                 if not os.path.isfile(file_path):
                     self.__output.write_line("wc: {}: No such file or directory.".
-                                        format(file))
+                                             format(file))
                     return_value = 1
                     break
                 with open(file, 'r') as opened_file:
@@ -275,14 +279,14 @@ class CommandWC(Command):
                 total_lines += line_count
                 if not len(self.__args) == 1:
                     self.__output.write_line('{:4d} {:4d} {:4d}    {}'.
-                                         format(line_count, word_count, byte_count, name))
+                                             format(line_count, word_count, byte_count, name))
                 else:
                     self.__output.write_line('{:4d} {:4d} {:4d}    {}'.
                                              format(line_count, word_count, byte_count, name))
 
             if len(self.__args) > 1:
                 self.__output.write_line('{:4d} {:4d} {:4d}    {}'.
-                                    format(total_lines, total_words, total_bytes, 'total'))
+                                         format(total_lines, total_words, total_bytes, 'total'))
         return CommandResult(self.__output, env, return_value)
 
 
@@ -291,6 +295,7 @@ class UnknownCommand(Command):
     Commands that are not in this implementation
     will be called from the standard shell.
     """
+
     def __init__(self, cmd, args):
         """
         Takes the command name and arguments if they are given.
@@ -322,7 +327,7 @@ class UnknownCommand(Command):
 
         except Exception as err:
             self.__output.write_line('Command {}: command not found.'.
-                                format(self.__command))
+                                     format(self.__command))
             return_value = 1
 
         return CommandResult(self.__output, env, return_value)
@@ -332,6 +337,7 @@ class CommandASSIGNMENT(Command):
     """
     Command that assigns value to variable, i.e. x=10.
     """
+
     def __init__(self, var_name, value):
         """
         Takes the variable's name and value.
