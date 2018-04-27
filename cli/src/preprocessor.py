@@ -67,7 +67,7 @@ class Preprocessor:
             elif input[0] == '\"':
                 next_index = input[1:].find('\"')
                 if next_index == -1:
-                    raise ParserException('End of line: missing second quote.')
+                    raise ParserException('End of line: missing second double quote.')
                 in_quotes = input[1:next_index + 1]
                 ix = in_quotes.find('\'')
                 if ix != -1:
@@ -80,7 +80,7 @@ class Preprocessor:
             elif input[0] == '\'':
                 next_index = input[1:].find('\'')
                 if next_index == -1:
-                    raise ParserException('End of line: missing second quote2.')
+                    raise ParserException('End of line: missing second single quote.')
                 result += input[1:next_index+1]
                 input = input[next_index + 2:]
             else:
