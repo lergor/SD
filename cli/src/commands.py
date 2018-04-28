@@ -91,8 +91,8 @@ class CommandPIPE(Command):
 
         changed_input = Stream()
         output = result_of_left.get_output()
-        if output[-1] == os.linesep:
-            output = output[0:-1]
+        if output.endswith(os.linesep):
+            output = output[0:-len(os.linesep)]
         changed_input.write_line(output)
         changed_env = result_of_left.get_env()
         return self.__right_cmd.run(changed_input, changed_env)
@@ -134,7 +134,12 @@ class CommandCAT(Command):
                     return_value = 1
                     break
                 with open(file, 'r') as opened_file:
-                    self.__output.write(opened_file.read())
+                    text = opened_file.read()
+                    sep = '\n'
+                    if '\r\n' in text:
+                        sep = '\r\n'
+                    text = text.replace(sep, os.linesep)
+                    self.__output.write(text)
         return CommandResult(self.__output, env, return_value)
 
 
@@ -229,14 +234,13 @@ class CommandWC(Command):
         :param input: the name of file (string).
         :return: list with three counts.
         """
-        lines = input.split(os.linesep)
-        line_count = len(lines) - 1
-        if len(lines) == 1:
-            line_count = 1
-        word_count = 0
-        for line in lines:
-            word_count += len(line.split())
-        char_count = len(input.encode(sys.stdin.encoding))
+        sep = '\n'
+        if '\r\n' in input:
+            sep = '\r\n'
+        lines = input.split(sep)
+        line_count = max(len(lines) - 1, 1)
+        word_count = len(input.split())
+        char_count = len(input.replace(os.linesep, '\n'))
         return [line_count, word_count, char_count]
 
     def run(self, input, env):
@@ -321,10 +325,9 @@ class UnknownCommand(Command):
                                      encoding=sys.stdout.encoding)
             return_value = process.returncode
             self.__output.write(str(process.stdout))
-
         except Exception as err:
             self.__output.write_line('Command {}: command not found.'.
-                                format(self.__command))
+                                     format(self.__command))
             return_value = 1
 
         return CommandResult(self.__output, env, return_value)
@@ -445,19 +448,30 @@ class CommandGREP(Command):
                 with open(file, 'r') as f:
                     self.__result = ''
                     self.__i = 0
-                    lines = f.readlines()
+                    sep = '\n'
+                    text = f.read()
+                    if '\r\n' in text:
+                        sep = '\r\n'
+                    lines = text.split(sep)
                     self.__lines_after = None
                     for line in lines:
+                        if line and not line.endswith(os.linesep):
+                            line = line + os.linesep
                         self.process_string(line, len(lines))
 
         else:
-            lines = input.get_value().split(os.linesep)
+            lines = input.get_value()
+            sep = '\n'
+            if '\r\n' in lines:
+                sep = '\r\n'
+            lines = lines.split(sep)
             self.__result = ''
             self.__i = 0
             self.__lines_after = None
             for line in lines:
+                if line and not line.endswith(os.linesep):
+                    line = line + os.linesep
                 self.process_string(line, len(lines))
-            self.__output.write_line('')
         return CommandResult(self.__output, env, return_value)
 
     def process_string(self, line, length_lines):
@@ -496,7 +510,7 @@ class CommandGREP(Command):
             if self.__lines_after and self.__lines_after > 0:
                 self.__lines_after -= 1
                 self.__result += line
-                if self.__lines_after == 0 and self.__i < length_lines:
+                if self.__lines_after == 0 and (self.__i < length_lines and not self.__i == length_lines - 1):
                     self.__result += '\x1b[0;34m---\x1b[0m' + os.linesep
         self.__output.write(self.__result)
         self.__result = ''

@@ -20,6 +20,7 @@ class TestAllCommands(unittest.TestCase):
         command = UnknownCommand('kek', [])
         result = command.run(Stream(), self.env)
         self.assertEqual(1, result.return_value())
+        print(result.get_output())
         self.assertEqual('Command kek: command not found.{}'.format(os.linesep),
                          result.get_output())
 
@@ -88,6 +89,10 @@ class TestAllCommands(unittest.TestCase):
         result = command.run(Stream(), self.env)
         with open(self.file, 'r') as f:
             answer = f.read()
+            sep = '\n'
+            if '\r\n' in answer:
+                sep = '\r\n'
+            answer = answer.replace(sep, os.linesep)
         self.assertEqual(0, result.return_value())
         self.assertEqual(answer, result.get_output())
 
@@ -103,8 +108,12 @@ class TestAllCommands(unittest.TestCase):
         command = CommandGREP()
         command.set_args(['Son', self.file])
         result = command.run(Stream(), self.env)
+        sep = '\n'
+        if '\r\n' in result.get_output():
+            sep = '\r\n'
+        result_text = result.get_output().replace(sep, os.linesep)
         self.assertEqual(0, result.return_value())
-        self.assertEqual('The Perfect \x1b[1;31mSon\x1b[0m.' + os.linesep, result.get_output())
+        self.assertEqual('The Perfect \x1b[1;31mSon\x1b[0m.' + os.linesep, result_text)
 
     def test_grep_ignore_case(self):
         command = CommandGREP()
