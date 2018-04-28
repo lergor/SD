@@ -23,6 +23,18 @@ class testCli(unittest.TestCase):
         result = self.cli.process_input('pwd')
         self.assertEqual(os.getcwd() + os.linesep, result.get_output())
 
+    def test_cat_pipe_grep(self):
+        result = self.cli.process_input('cat ../Readme.md | grep cat')
+        self.assertEqual('  - \x1b[1;31mcat\x1b[0m;' + os.linesep, result.get_output())
+
+    def test_grep_from_file(self):
+        result = self.cli.process_input('grep cat ../Readme.md')
+        self.assertEqual('  - \x1b[1;31mcat\x1b[0m;' + os.linesep, result.get_output())
+
+    def test_grep_fail_without_num(self):
+        result = self.cli.process_input('grep -A cat ../Readme.md')
+        self.assertEqual('The NUM argument is required.' + os.linesep, result.get_output())
+
     def test_exceptions(self):
         self.cli.process_input('x=exit')
         self.assertRaises(ExitException,

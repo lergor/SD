@@ -389,7 +389,10 @@ class CommandGREP(Command):
         if (not input.get_value() and len(self.__args) <= 1) or (input.get_value() and len(self.__args) < 1):
             self.__output.write_line('Wrong number of arguments for grep command.')
             return CommandResult(self.__output, env, 1)
-
+        as_str = ' '.join(self.__args)
+        if re.search('-.*A', as_str)and not re.search('-.*A\s*[0-9]{1,}', as_str):
+                self.__output.write_line('The NUM argument is required.')
+                return CommandResult(self.__output, env, 1)
         parser = argparse.ArgumentParser()
         parser.add_argument('-i', '--ignore-case', action='store_true',
                             help='Ignore case distinctions, so that characters'
@@ -398,7 +401,7 @@ class CommandGREP(Command):
                             help='Select  only  those  lines  containing '
                                  'matches that form whole words.')
         parser.add_argument('-A', '--after-context', metavar='NUM', type=int,
-                            help='increase output verbosity')
+                            help='Increase output verbosity.')
         parser.add_argument('pattern', type=str, metavar='PATTERN')
         if not input.get_value():
             parser.add_argument('file', metavar='FILE',
@@ -417,6 +420,7 @@ class CommandGREP(Command):
             msg = 'Exception {} while \'grep\' running.'.format(str(type(ex)))
             self.__output.write_line(msg)
             return_value = 0
+
         if return_value != 0:
             return CommandResult(self.__output, env, return_value)
         self.__args = args
@@ -445,6 +449,7 @@ class CommandGREP(Command):
                     self.__lines_after = None
                     for line in lines:
                         self.process_string(line, len(lines))
+
         else:
             lines = input.get_value().split(os.linesep)
             self.__result = ''
