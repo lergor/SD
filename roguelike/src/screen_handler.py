@@ -92,3 +92,10 @@ class ScreenHandler:
 
     def message_box(self, root_console, header, width, screen_width, screen_height):
         self.menu(root_console, header, [], width, screen_width, screen_height)
+
+    def level_up_menu(self, con, root, header, player, menu_width, screen_width, screen_height):
+        options = ['Constitution (+20 HP, from {0})'.format(player.fighter.max_hp),
+                   'Strength (+1 attack, from {0})'.format(player.fighter.power),
+                   'Agility (+1 defense, from {0})'.format(player.fighter.defense)]
+
+        self.menu(root, header, options, menu_width, screen_width, screen_height)

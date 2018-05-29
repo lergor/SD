@@ -1,7 +1,5 @@
 import math
-
-from src.equipment_slots import EquipmentSlots
-from src.utils import UISettings, RenderOrder
+from src.utils import UISettings, RenderOrder, EquipmentSlots
 from src.world.characters.equipment import Equipment
 from src.world.characters.equippable import Equippable
 from src.world.characters.fighter import Fighter
@@ -68,7 +66,6 @@ class Entity:
 
     def move_towards(self, ui, target_x, target_y):
         path = ui.map.compute_path(self.x, self.y, target_x, target_y)
-
         if path:
             dx = path[0][0] - self.x
             dy = path[0][1] - self.y
@@ -81,21 +78,26 @@ class Entity:
         return math.sqrt((x - self.x) ** 2 + (y - self.y) ** 2)
 
     def distance_to(self, other):
-        dx = other.x - self.x
-        dy = other.y - self.y
-        return math.sqrt(dx ** 2 + dy ** 2)
+        return math.sqrt((other.x - self.x) ** 2 + (other.y - self.y) ** 2)
 
     def draw(self, map, console):
         if map.fov[self.x, self.y] or (self.stairs and map.explored[self.x][self.y]):
             console.draw_char(self.x, self.y, self.char, self.color, bg=None)
 
+    def overlap(self, entity):
+        return self.x == entity.x and self.y == entity.y
 
+    def make_dead(self):
+        self.char = '%'
+        self.color = UISettings.colors.get('dark_red')
+        self.blocks = False
+        self.fighter = None
+        self.ai = None
+        self.name = 'remains of ' + self.name
+        self.render_order = RenderOrder.CORPSE
 
 
 class EntityFabric:
-
-    def __init__(self):
-        pass
 
     @staticmethod
     def create_player():
@@ -111,7 +113,7 @@ class EntityFabric:
         equippable_component = Equippable(EquipmentSlots.MAIN_HAND, power_bonus=2)
         dagger = Entity(0, 0, '-', UISettings.colors.get('sky'), 'Dagger',
                         equippable=equippable_component)
-        player.inventory.add_item(dagger, UISettings.colors)
+        player.inventory.add_item(dagger)
         player.equipment.toggle_equip(dagger)
         return player
 

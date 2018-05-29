@@ -4,11 +4,10 @@ from src.game_messages import Message
 
 
 class BasicMonster:
+
     def take_turn(self, target, ui):
         results = []
-
         monster = self.owner
-
         if ui.map.fov[monster.x, monster.y]:
             if monster.distance_to(target) >= 2:
                 monster.move_towards(ui, target.x, target.y)

@@ -63,17 +63,11 @@ class GameMap(Map):
                              render_order=RenderOrder.STAIRS, stairs=stairs_component)
         entities.append(down_stairs)
 
-    def next_floor(self, player, message_log):
+    def next_floor(self, player, level):
         game_map = GameMap(self.dungeon_level)
         entities = [player]
-
         self.make_map(entities)
-
         player.fighter.heal(player.fighter.max_hp // 2)
-
-        message_log.add_message(Message('You take a moment to rest, and recover your strength.',
-                                        UISettings.colors.get('light_violet')))
-
         return game_map, entities
 
 

@@ -1,6 +1,7 @@
 from tcod import image_load
 from enum import Enum
 
+
 class RenderOrder(Enum):
     STAIRS = 1
     CORPSE = 2
@@ -65,3 +66,27 @@ class MenuType(Enum):
     GAME = 2
     INFO = 3
     INVENTORY = 4
+
+
+class GameStates(Enum):
+    PLAYER_TURN = 1
+    ENEMY_TURN = 2
+    PLAYER_DEAD = 3
+    SHOW_INVENTORY = 4
+    DROP_INVENTORY = 5
+    TARGETING = 6
+    LEVEL_UP = 7
+    CHARACTER_SCREEN = 8
+    MENU = 9
+    EXIT = 10
+
+
+def find(f, seq):
+    for x in seq:
+        if f(x):
+            return x
+
+
+class EquipmentSlots(Enum):
+    MAIN_HAND = 1
+    OFF_HAND = 2

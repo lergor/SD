@@ -1,4 +1,6 @@
-from src.game_states import GameStates
+from src.utils import GameStates
+import tdl
+
 
 ACTIVE_KEYS = {
     'UP': {'move': (0, -1)},
@@ -23,16 +25,18 @@ ACTIVE_CHARS = {
     'a': {'show_inventory': True},
     'x': {'drop_inventory': True},
     'q': {'show_character_screen': True},
+    'g': {'take_stairs' : True},
     '1': {'new_game': True},
     '2': {'info': True},
     '3': {'exit': True}
 }
 
+
 class Flags:
 
-    def __init__(self, action=None):
-        if action:
-            self.update(action)
+    def __init__(self, input_dict=None):
+        if input_dict:
+            self.update(input_dict)
         else:
             self.__clear()
 
@@ -51,40 +55,53 @@ class Flags:
         self.show_character_screen = None
         self.fullscreen = None
 
-    def update(self, action):
+    def update(self, input_dict):
         self.__clear()
-        self.new_game = action.get('new_game')
-        self.info = action.get('info')
-        self.exit = action.get('exit')
-        self.move = action.get('move')
-        self.wait = action.get('wait')
-        self.pickup = action.get('pickup')
-        self.show_inventory = action.get('show_inventory')
-        self.drop_inventory = action.get('drop_inventory')
-        self.inventory_index = action.get('inventory_index')
-        self.take_stairs = action.get('take_stairs')
-        self.level_up = action.get('level_up')
-        self.show_character_screen = action.get('show_character_screen')
-        self.fullscreen = action.get('fullscreen')
+        self.new_game = input_dict.get('new_game')
+        self.info = input_dict.get('info')
+        self.exit = input_dict.get('exit')
+        self.move = input_dict.get('move')
+        self.wait = input_dict.get('wait')
+        self.pickup = input_dict.get('pickup')
+        self.show_inventory = input_dict.get('show_inventory')
+        self.drop_inventory = input_dict.get('drop_inventory')
+        self.inventory_index = input_dict.get('inventory_index')
+        self.take_stairs = input_dict.get('take_stairs')
+        self.level_up = input_dict.get('level_up')
+        self.show_character_screen = input_dict.get('show_character_screen')
+        self.fullscreen = input_dict.get('fullscreen')
+        self.message = input_dict.get('message')
+        self.dead_entity = input_dict.get('dead')
+        self.item_added = input_dict.get('item_added')
+        self.item_consumed = input_dict.get('consumed')
+        self.item_dropped = input_dict.get('item_dropped')
+        self.equip = input_dict.get('equip')
+        self.xp = input_dict.get('xp')
 
 
 class InputHandler:
 
     def __init__(self):
-        self.game_state = GameStates.PLAYERS_TURN
+        self.game_state = GameStates.PLAYER_TURN
 
         self.STATE_TO_METHOD = {
-            GameStates.PLAYERS_TURN: self.__handle_player_turn_keys,
+            GameStates.PLAYER_TURN: self.__handle_player_turn_keys,
             GameStates.PLAYER_DEAD: self.__handle_player_dead_keys,
             GameStates.SHOW_INVENTORY: self.__handle_inventory_keys,
             GameStates.DROP_INVENTORY: self.__handle_inventory_keys,
             GameStates.MENU: self.__handle_main_menu
         }
 
-    def handle(self, user_input, state):
+    def __catch_input(self):
+        for event in tdl.event.get():
+            if event.type == 'KEYDOWN':
+                return event
+        return None
+
+    def catch_and_process_input(self, state):
         action = dict()
         self.game_state = state
-        self.user_input = user_input
+        self.user_input = self.__catch_input()
         if self.user_input:
             if self.user_input.key == 'ESCAPE':
                 action = {'exit': True}
