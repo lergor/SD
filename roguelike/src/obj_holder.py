@@ -74,3 +74,10 @@ class ObjectsHolder:
                                     UISettings.colors.get('orange'))
         dead_entity.make_dead()
         return message, player_dead
+
+    def enemies_move(self, state):
+        enemy_turn_results = []
+        for entity in self.entities:
+            if entity.ai:
+                enemy_turn_results.extend(entity.ai.take_turn(self.player, self))
+        return enemy_turn_results

@@ -40,7 +40,8 @@ class Game:
         self.recompute = True
         self.previous_state = self.state
 
-        while not tdl.event.is_window_closed() and self.state != GameStates.EXIT:
+        while not tdl.event.is_window_closed() \
+                and self.state not in {GameStates.PLAYER_DEAD, GameStates.EXIT}:
             self.ui_holder.renew_view()
             self.recompute = False
             flags = self.input_handler.catch_and_process_input(self.state)
@@ -59,34 +60,15 @@ class Game:
 
             if flags.fullscreen:
                 tdl.set_fullscreen(not tdl.get_fullscreen())
+
             if self.state == GameStates.PLAYER_TURN:
                 turn_results = self.player_turn(flags)
                 self.process_results(turn_results)
 
             if self.state == GameStates.ENEMY_TURN:
-
-                for entity in self.obj_holder.entities:
-                    if entity.ai:
-                        enemy_turn_results = entity.ai.take_turn(self.obj_holder.player, self.obj_holder)
-
-                        for enemy_turn_result in enemy_turn_results:
-                            message = enemy_turn_result.get('message')
-                            dead_entity = enemy_turn_result.get('dead')
-
-                            if message:
-                                self.message_log.add_message(message)
-
-                            if dead_entity:
-                                message, player_dead = self.obj_holder.kill_entity(dead_entity)
-                                self.message_log.add_message(message)
-                                if player_dead:
-                                    self.state = GameStates.PLAYER_DEAD
-                                    break
-
-                        if self.state == GameStates.PLAYER_DEAD:
-                            break
-                        else:
-                            self.state = GameStates.PLAYER_TURN
+                turn_results = self.obj_holder.enemies_move(self.state)
+                self.process_results(turn_results)
+                self.state = GameStates.PLAYER_TURN
 
     def player_turn(self, flags):
         player_turn_results = []
@@ -130,41 +112,41 @@ class Game:
         return player_turn_results
 
     def process_results(self, turn_results):
-        for turn_result in turn_results:
-            flags = Flags(turn_result)
-            self.message_log.add_message(flags.message)
+            for turn_result in turn_results:
+                flags = Flags(turn_result)
+                self.message_log.add_message(flags.message)
 
-            if flags.dead_entity:
-                message, player_dead = self.obj_holder.kill_entity(flags.dead_entity)
-                if player_dead:
-                    self.state = GameStates.PLAYER_DEAD
-                self.message_log.add_message(message)
+                if flags.dead_entity:
+                    message, player_dead = self.obj_holder.kill_entity(flags.dead_entity)
+                    if player_dead:
+                        self.state = GameStates.PLAYER_DEAD
+                    self.message_log.add_message(message)
 
-            if flags.item_added or flags.item_consumed or flags.item_dropped:
-                if flags.item_dropped:
-                    self.obj_holder.entities.append(flags.item_dropped)
-                self.state = GameStates.ENEMY_TURN
+                if flags.item_added or flags.item_consumed or flags.item_dropped:
+                    if flags.item_dropped:
+                        self.obj_holder.entities.append(flags.item_dropped)
+                    self.state = GameStates.ENEMY_TURN
 
-            if flags.equip:
-                equip_results = self.obj_holder.player.equipment.toggle_equip(flags.equip)
-                for equip_result in equip_results:
-                    equipped = equip_result.get('equipped')
-                    dequipped = equip_result.get('dequipped')
-                    if equipped:
-                        self.message_log.add_message(Message('You equipped the {0}'.format(
-                            equipped.name)))
-                    if dequipped:
-                        self.message_log.add_message(Message('You dequipped the {0}'.format(
-                            dequipped.name)))
-                self.state = GameStates.ENEMY_TURN
+                if flags.equip:
+                    equip_results = self.obj_holder.player.equipment.toggle_equip(flags.equip)
+                    for equip_result in equip_results:
+                        equipped = equip_result.get('equipped')
+                        dequipped = equip_result.get('dequipped')
+                        if equipped:
+                            self.message_log.add_message(Message('You equipped the {0}'.format(
+                                equipped.name)))
+                        if dequipped:
+                            self.message_log.add_message(Message('You dequipped the {0}'.format(
+                                dequipped.name)))
+                    self.state = GameStates.ENEMY_TURN
 
-            if flags.xp:
-                leveled_up = self.obj_holder.player.level.add_xp(flags.xp)
-                message = Message('You gain {0} experience points.'.format(flags.xp))
-                self.message_log.add_message(message)
+                if flags.xp:
+                    leveled_up = self.obj_holder.player.level.add_xp(flags.xp)
+                    message = Message('You gain {0} experience points.'.format(flags.xp))
+                    self.message_log.add_message(message)
 
-                if leveled_up:
-                    text = 'Your battle skills grow stronger! You reached level {0}'.format(
-                            self.obj_holder.player.level.current_level) + '!'
-                    self.message_log.add_message(Message(text, UISettings.colors.get('yellow')))
-                    self.previous_state, self.state = self.state, GameStates.LEVEL_UP
+                    if leveled_up:
+                        text = 'Your battle skills grow stronger! You reached level {0}'.format(
+                                self.obj_holder.player.level.current_level) + '!'
+                        self.message_log.add_message(Message(text, UISettings.colors.get('yellow')))
+                        self.previous_state, self.state = self.state, GameStates.LEVEL_UP
