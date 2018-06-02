@@ -103,10 +103,9 @@ class InputHandler:
         self.game_state = state
         self.user_input = self.__catch_input()
         if self.user_input:
+            print(self.user_input.key, self.user_input.char)
             if self.user_input.key == 'ESCAPE':
                 action = {'exit': True}
-            elif self.user_input.key == 'ENTER' and self.user_input.alt:
-                action = {'fullscreen': True}
             else:
                 handler = self.STATE_TO_METHOD.get(self.game_state, None)
                 if handler:

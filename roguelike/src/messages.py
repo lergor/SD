@@ -18,8 +18,8 @@ class MessageLog:
 
     def add_message(self, message):
         if message and message.text:
-            new_msg_lines = textwrap.wrap(message.text, self.width)
-            for line in new_msg_lines:
+            msg_lines = textwrap.wrap(message.text, self.width)
+            for line in msg_lines:
                 if len(self.messages) == self.height:
                     del self.messages[0]
                 self.messages.append(Message(line, message.color))

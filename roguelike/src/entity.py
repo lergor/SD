@@ -1,20 +1,24 @@
 import math
 from src.utils import UISettings, RenderOrder, EquipmentSlots
+from src.world.characters.ai import BasicMonster
 from src.world.characters.equipment import Equipment
 from src.world.characters.equippable import Equippable
 from src.world.characters.fighter import Fighter
 from src.world.characters.inventory import Inventory
 from src.world.characters.item import Item
-
 from src.world.characters.level import Level
-
+from src.world.characters.stairs import Stairs
+from src.item_functions import *
 
 class Entity:
     """
     A generic object to represent players, enemies, items, etc.
     """
-    def __init__(self, x, y, char, color, name, blocks=False, render_order=RenderOrder.CORPSE, fighter=None, ai=None,
-                 item=None, inventory=None, stairs=None, level=None, equipment=None, equippable=None):
+    def __init__(self, x, y, char, color, name, blocks=False,
+                 render_order=RenderOrder.CORPSE,
+                 fighter=None, ai=None,
+                 item=None, inventory=None, stairs=None,
+                 level=None, equipment=None, equippable=None):
         self.x = x
         self.y = y
         self.char = char
@@ -118,6 +122,39 @@ class EntityFabric:
         return player
 
     @staticmethod
-    def make_entity():
-        pass
+    def make_stairs(room, level):
+        stairs_component = Stairs(level + 1)
+        x, y = room.center()
+        return Entity(x, y, '>', (255, 255, 255), 'Stairs',
+                      render_order=RenderOrder.STAIRS, stairs=stairs_component)
 
+    @staticmethod
+    def make_entity(name, x, y):
+        if name in {'Spider', 'Snake', 'Bat'}:
+            if name == 'Spider':
+                hp, defense, power, xp  = 20, 0, 4, 35
+                symbol, color = 'x', UISettings.colors.get('desaturated_green')
+            if name == 'Snake':
+                hp, defense, power, xp = 25, 1, 6, 55
+                symbol, color = '&', UISettings.colors.get('my_green')
+            if name == 'Bat':
+                hp, defense, power, xp = 30, 2, 8, 100
+                symbol, color = 'V', UISettings.colors.get('darker_green')
+            fighter_component = Fighter(hp=hp, defense=defense, power=power, xp=xp)
+            ai_component = BasicMonster()
+            return Entity(x, y, symbol, color, name, blocks=True,
+                          render_order=RenderOrder.ACTOR, fighter=fighter_component,
+                          ai=ai_component)
+        else:
+            item_component, equippable_component = None, None
+            if name == 'Healing potion':
+                item_component = Item(use_function=heal, amount=40)
+                sym, color = '!', UISettings.colors.get('violet')
+            if name == 'Sword':
+                equippable_component = Equippable(EquipmentSlots.MAIN_HAND, power_bonus=3)
+                sym, color = '/', UISettings.colors.get('sky')
+            if name == 'Shield':
+                equippable_component = Equippable(EquipmentSlots.OFF_HAND, defense_bonus=1)
+                sym, color = '[', UISettings.colors.get('darker_orange')
+            return Entity(x, y, sym, color, name, render_order=RenderOrder.ITEM, item=item_component,
+                              equippable=equippable_component)

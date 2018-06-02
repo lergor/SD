@@ -1,10 +1,10 @@
 import tdl
 from src.entity import EntityFabric
-from src.map_utils import GameMap
+from src.map import GameMap
 from src.utils import *
 from src.screen_handler import *
 from src.world.characters.level import Level
-from src.game_messages import Message
+from src.messages import Message
 
 
 class ObjectsHolder:
@@ -49,10 +49,10 @@ class ObjectsHolder:
         color = UISettings.colors.get('yellow')
         stairs_entity = find(lambda e: e.stairs and self.player.overlap(e), self.entities)
         if stairs_entity:
-            self.map, self.entities = self.map.next_floor(self.player, stairs_entity.stairs.floor)
             recompute = True
             text = 'You take a moment to rest, and recover your strength.'
             color = UISettings.colors.get('light_violet')
+            self.map, self.entities = self.map.next_floor(self.player, stairs_entity.stairs.floor)
         return [{'message': Message(text, color)}], recompute
 
     def player_level_up(self, level_up):

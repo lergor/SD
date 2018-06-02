@@ -1,6 +1,6 @@
 from src.world.characters.ai import ConfusedMonster
 
-from src.game_messages import Message
+from src.messages import Message
 
 
 def heal(*args, **kwargs):

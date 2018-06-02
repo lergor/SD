@@ -1,6 +1,6 @@
 from random import randint
 
-from src.game_messages import Message
+from src.messages import Message
 
 
 class BasicMonster:
@@ -12,7 +12,7 @@ class BasicMonster:
             if monster.distance_to(target) >= 2:
                 monster.move_towards(ui, target.x, target.y)
 
-            elif target.fighter.hp > 0:
+            elif target.fighter and target.fighter.hp > 0:
                 attack_results = monster.fighter.attack(target)
                 results.extend(attack_results)
 

@@ -6,8 +6,8 @@ from src.utils import UISettings, GameStates
 
 class UIHolder:
 
-    def __init__(self, j):
-        self.game = j
+    def __init__(self, game):
+        self.game = game
 
     def init_ui(self):
         tdl.set_font(UISettings.game_font, greyscale=True, altLayout=True)
@@ -17,8 +17,8 @@ class UIHolder:
         self.panel = tdl.Console(UISettings.screen_width, UISettings.panel_height)
         self.screen_handler = ScreenHandler(self.console, self.root_console)
 
-    def show(self, screen_type):
-        self.screen_handler.show(screen_type)
+    def show(self, screen_type, **kwargs):
+        self.screen_handler.show(screen_type, **kwargs)
 
     def clear_view(self):
         self.root_console.clear()
@@ -28,9 +28,9 @@ class UIHolder:
     def renew_view(self):
         self.render_all()
         tdl.flush()
-        self.clear_all()
+        self.clear_all_entities()
 
-    def clear_all(self):
+    def clear_all_entities(self):
         for entity in self.game.obj_holder.entities:
             self.console.draw_char(entity.x, entity.y, ' ', entity.color, bg=None)
 
@@ -75,9 +75,9 @@ class UIHolder:
 
         for entity in entities_in_render_order:
             entity.draw(map, self.console)
-
-        self.console.draw_str(1, UISettings.screen_height - 2, 'HP: {0:02}/{1:02}'.format(
-            player.fighter.hp, player.fighter.max_hp))
+        if player.fighter:
+            self.console.draw_str(1, UISettings.screen_height - 2, 'HP: {0:02}/{1:02}'.format(
+                player.fighter.hp, player.fighter.max_hp))
 
         self.root_console.blit(self.console, 0, 0, UISettings.screen_width, UISettings.screen_height, 0, 0)
 
@@ -86,8 +86,8 @@ class UIHolder:
         for message in message_log.messages:
             self.panel.draw_str(message_log.x, y, message.text, bg=None, fg=message.color)
             y += 1
-
-        self.render_bar(1, 1, 'HP', player.fighter.hp, player.fighter.max_hp)
+        if  player.fighter:
+            self.render_bar(1, 1, 'HP', player.fighter.hp, player.fighter.max_hp)
 
         self.panel.draw_str(1, 3, 'Dungeon Level: {0}'.format(map.dungeon_level),
                             fg=UISettings.colors.get('white'), bg=None)
@@ -95,7 +95,7 @@ class UIHolder:
         self.root_console.blit(self.panel, 0, UISettings.panel_y, UISettings.screen_width,
                                UISettings.panel_height, 0, 0)
 
-        if state in (GameStates.SHOW_INVENTORY, GameStates.DROP_INVENTORY):
+        if state in {GameStates.SHOW_INVENTORY, GameStates.DROP_INVENTORY}:
             self.screen_handler.inventory_menu(player)
 
         elif state == GameStates.CHARACTER_SCREEN:

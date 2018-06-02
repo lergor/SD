@@ -1,4 +1,4 @@
-from src.game_messages import Message
+from src.messages import Message
 
 
 class Fighter:

@@ -9,18 +9,18 @@ class ScreenHandler:
         self.console = console
         self.root_console = root_console
 
-    def show(self, menu_type):
-        if menu_type == MenuType.MAIN:
+    def show(self, screen_type, **kwargs):
+        if screen_type == ScreenType.MAIN:
             self.__main_menu()
+        if screen_type == ScreenType.LEVEL_UP:
+            self.level_up_menu(kwargs.get('player'))
 
     def __main_menu(self):
         UISettings.background_image.blit_2x(self.root_console, 0, 0)
-
-        title = 'SIMPLE ROGUELIKE'
+        title = UISettings.window_title
         center = (UISettings.screen_width - len(title)) // 2
         self.root_console.draw_str(center, UISettings.screen_height // 2 - 4,
                                    title, bg=None, fg=UISettings.colors.get('light_yellow'))
-
         title = 'By lergor'
         center = (UISettings.screen_width - len(title)) // 2
         self.root_console.draw_str(center, UISettings.screen_height - 2, title, bg=None,
@@ -93,9 +93,10 @@ class ScreenHandler:
     def message_box(self, root_console, header, width, screen_width, screen_height):
         self.menu(root_console, header, [], width, screen_width, screen_height)
 
-    def level_up_menu(self, con, root, header, player, menu_width, screen_width, screen_height):
+    def level_up_menu(self, player):
         options = ['Constitution (+20 HP, from {0})'.format(player.fighter.max_hp),
                    'Strength (+1 attack, from {0})'.format(player.fighter.power),
                    'Agility (+1 defense, from {0})'.format(player.fighter.defense)]
 
-        self.menu(root, header, options, menu_width, screen_width, screen_height)
+        self.menu(self.root_console, '', options, UISettings.inventory_width,
+                               UISettings.screen_width, UISettings.screen_height)

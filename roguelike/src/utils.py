@@ -8,11 +8,13 @@ class RenderOrder(Enum):
     ITEM = 3
     ACTOR = 4
 
-class UISettings:
+
+class UISettings():
     menu_font = 'src/terminal10x10_gs_tc.png'
     game_font = 'src/arial12x12.png'
     window_title = 'Roguelike'
-    screen_width = 80
+    background_image = image_load('src/background.png')
+    screen_width = 90
     screen_height = 50
     bar_width = 20
     panel_height = 7
@@ -30,8 +32,6 @@ class UISettings:
     fov_radius = 10
     max_monsters_per_room = 3
     max_items_per_room = 2
-    background_image = image_load('src/background.png')
-
     inventory_width = 50
 
     colors = {
@@ -40,6 +40,7 @@ class UISettings:
         'light_wall': (130, 110, 50),
         'light_ground': (200, 180, 50),
         'desaturated_green': (63, 127, 63),
+        'my_green': (0, 127, 63),
         'darker_green': (0, 127, 0),
         'dark_red': (191, 0, 0),
         'white': (255, 255, 255),
@@ -59,13 +60,15 @@ class UISettings:
         'sky': (0, 191, 255),
         'darker_orange': (127, 63, 0)
     }
+    white = (255, 255, 255)
 
 
-class MenuType(Enum):
+class ScreenType(Enum):
     MAIN = 1
     GAME = 2
     INFO = 3
     INVENTORY = 4
+    LEVEL_UP = 5
 
 
 class GameStates(Enum):
@@ -90,3 +93,7 @@ def find(f, seq):
 class EquipmentSlots(Enum):
     MAIN_HAND = 1
     OFF_HAND = 2
+
+
+class EntitiesSettings:
+    stairs = ('>', UISettings.white, 'Stairs', RenderOrder.STAIRS)
