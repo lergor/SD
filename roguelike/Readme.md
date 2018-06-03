@@ -138,7 +138,7 @@ It contains all accessories of the entity and methods for interactions
 - An **Inventory** class holds all inventory which the Entity owns.
     It can add, drop, use and remove Items.
 - The **Item** represents an item in the game such as a healing potion.
- Has static methods for each item that affects on the Entity, for example, heal for a healing potion.
+ Has static methods for each item that affects on the Entity, for example, 'heal' for a healing potion.
 - A **Level** class contains information about
     the player's level and its experience points.
 - A **BasicMonster** class implements a role of an enemy for Entity.

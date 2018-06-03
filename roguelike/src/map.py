@@ -35,7 +35,7 @@ class GameMap(Map):
                 self.__mark_on_map(new_room)
                 if len(rooms) > 0:
                     self.__connect_rooms(rooms[-1], new_room)
-                self.place_entities(new_room, self.dungeon_level, self.entities)
+                self.__place_entities(new_room, self.dungeon_level, self.entities)
                 rooms.append(new_room)
         self.player.x, self.player.y = rooms[0].center()
         x, y = rooms[-1].center()
@@ -69,48 +69,67 @@ class GameMap(Map):
             self.walkable[x, y] = True
             self.transparent[x, y] = True
 
-    def place_entities(self, room, level, entities):
-        monsters_per_room = self.__from_dungeon_level([[2, 1], [3, 4], [5, 7]], level)
-        items_per_room = self.__from_dungeon_level([[1, 1], [2, 4]], level)
+    def __place_entities(self, room):
+        monsters_per_room = self.__from_dungeon_level([[2, 1], [3, 4], [5, 7]])
+        items_per_room = self.__from_dungeon_level([[1, 1], [2, 4]])
         monster_chances = {
             'Spider': 80,
-            'Bat': self.__from_dungeon_level([[15, 3], [30, 5], [60, 7]], level),
-            'Snake': self.__from_dungeon_level([[0, 3], [10, 5], [50, 7], [80, 10]], level)
+            'Bat': self.__from_dungeon_level([[15, 3], [30, 5], [60, 7]]),
+            'Snake': self.__from_dungeon_level([[0, 3], [10, 5], [50, 7], [80, 10]])
         }
         item_chances = {
             'Healing potion': 35,
-            'Sword': self.__from_dungeon_level([[5, 4]], level),
-            'Shield': self.__from_dungeon_level([[15, 8]], level)
+            'Sword': self.__from_dungeon_level([[5, 4]]),
+            'Shield': self.__from_dungeon_level([[15, 8]])
         }
         num = len(self.entities)
-        self.__place(room, monsters_per_room, monster_chances, entities)
-        logger.info('Monsters created: {}.'.format(len(entities) - num))
+        self.__place(room, monsters_per_room, monster_chances)
+        logger.info('Monsters created: {}.'.format(len(self.entities) - num))
         num = len(self.entities)
-        self.__place(room, items_per_room, item_chances, entities)
-        logger.info('Items created: {}.'.format(len(entities) - num))
+        self.__place(room, items_per_room, item_chances)
+        logger.info('Items created: {}.'.format(len(self.entities) - num))
 
-    def __from_dungeon_level(self, table, level):
+    def __from_dungeon_level(self, table):
         for (value, level_value) in reversed(table):
-            if level >= level_value:
+            if self.dungeon_level >= level_value:
                 return value
         return 0
 
-    def __place(self, room, num_per_room, chances, entities):
+    def __place(self, room, num_per_room, chances):
         amount = randint(0, num_per_room)
         for i in range(amount):
             x = randint(room.x1 + 1, room.x2 - 1)
             y = randint(room.y1 + 1, room.y2 - 1)
 
-            if not any([entity for entity in entities if entity.x == x and entity.y == y]):
+            if not any([entity for entity in self.entities if entity.x == x and entity.y == y]):
                 monster_choice = self.__choice_from_dict(chances)
                 monster = EntityFactory.create_entity(monster_choice, x, y)
-                entities.append(monster)
+                self.entities.append(monster)
 
     def __choice_from_dict(elf, choice_dict):
         choices = list(choice_dict.keys())
         chances = list(choice_dict.values())
         decimal_chances = [chance / sum(chances) for chance in chances]
         return choice(choices, p=decimal_chances)
+
+    def recompute(self):
+        to_draw = []
+        self.compute_fov(self.player.x, self.player.y, 'BASIC', 10)
+        for x, y in self:
+            wall = not self.transparent[x, y]
+            if self.fov[x, y]:
+                color = UISettings.light_ground
+                if wall:
+                    color = UISettings.light_wall
+                self.explored[x][y] = True
+                to_draw.append((x, y, color))
+            elif self.explored[x][y]:
+                if wall:
+                    color = UISettings.dark_wall
+                else:
+                    color = UISettings.dark_ground
+                to_draw.append((x, y, color))
+        return to_draw
 
 
 class Room:

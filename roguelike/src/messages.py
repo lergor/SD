@@ -20,13 +20,13 @@ class MessageLog:
     def __init__(self):
         self.messages = []
         self.x = UISettings.message_x
-        self.width = UISettings.message_width
-        self.height = UISettings.message_height
+        self.__width = UISettings.message_width
+        self.__height = UISettings.message_height
 
     def add_message(self, message):
         if message and message.text:
-            msg_lines = textwrap.wrap(message.text, self.width)
+            msg_lines = textwrap.wrap(message.text, self.__width)
             for line in msg_lines:
-                if len(self.messages) == self.height:
+                if len(self.messages) == self.__height:
                     del self.messages[0]
                 self.messages.append(Message(line, message.color))

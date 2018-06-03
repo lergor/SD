@@ -29,7 +29,6 @@ class Flags:
         self.take_stairs = None
         self.level_up = None
         self.show_character_screen = None
-        self.fullscreen = None
 
     def update(self, input_dict):
         self.__clear()
@@ -60,9 +59,9 @@ class InputHandler:
     """
 
     def __init__(self):
-        self.game_state = GameStates.PLAYER_TURN
+        self.__game_state = GameStates.PLAYER_TURN
 
-        self.STATE_TO_METHOD = {
+        self.__state_to_method = {
             GameStates.PLAYER_TURN: self.__handle_player_turn_keys,
             GameStates.PLAYER_DEAD: self.__handle_player_dead_keys,
             GameStates.SHOW_INVENTORY: self.__handle_inventory_keys,
@@ -74,55 +73,54 @@ class InputHandler:
     def __catch_input(self):
         for event in tdl.event.get():
             if event.type == 'KEYDOWN':
-                if event.key != 'TEXT':
-                    logger.info('Pressed: {} {}'.format(event.key, event.char))
                 return event
         return None
 
     def catch_and_process_input(self, state):
         action = dict()
-        self.game_state = state
-        self.user_input = self.__catch_input()
-        if self.user_input:
-            if self.user_input.key == 'ESCAPE':
+        self.__game_state = state
+        self.__user_input = self.__catch_input()
+        if self.__user_input:
+            logger.info('Pressed: {} {}'.format(self.__user_input.key, self.__user_input.char))
+            if self.__user_input.key == 'ESCAPE':
                 action = {'exit': True}
             else:
-                handler = self.STATE_TO_METHOD.get(self.game_state, None)
+                handler = self.__state_to_method.get(self.__game_state, None)
                 if handler:
                     action = handler()
             return Flags(action)
         return Flags()
 
     def __handle_player_turn_keys(self):
-        key_char = self.user_input.char
+        key_char = self.__user_input.char
         if key_char and key_char not in {'1', '2', '3'}:
             return ACTIVE_CHARS.get(key_char, {})
         else:
-            return ACTIVE_KEYS.get(self.user_input.key, {})
+            return ACTIVE_KEYS.get(self.__user_input.key, {})
 
     def __handle_player_dead_keys(self):
-        key_char = self.user_input.char
-        if self.user_input.char == 'q':
+        key_char = self.__user_input.char
+        if self.__user_input.char == 'q':
             return ACTIVE_CHARS.get(key_char, {})
         return {}
 
     def __handle_inventory_keys(self):
-        if self.user_input.char:
-            index = ord(self.user_input.char) - ord('a')
+        if self.__user_input.char:
+            index = ord(self.__user_input.char) - ord('a')
             if index >= 0:
                 return {'inventory_index': index}
         return {}
 
     def __handle_main_menu(self):
-        key_char = self.user_input.char
+        key_char = self.__user_input.char
         if key_char in {'a', 'b', 'c'}:
             return ACTIVE_CHARS.get(key_char + key_char)
         return {}
 
     def __handle_level_up(self):
-        if self.user_input.char:
+        if self.__user_input.char:
             choices = ['hp', 'str', 'def']
-            index = ord(self.user_input.char) - ord('a')
+            index = ord(self.__user_input.char) - ord('a')
             if index < len(choices):
                 return {'level_up': choices[index]}
         return {}

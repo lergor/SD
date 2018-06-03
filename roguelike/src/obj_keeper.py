@@ -20,7 +20,7 @@ class ObjectsKeeper:
         logger.info('Created player: ({}, {})'.format(self.player.x, self.player.y))
         self.level = 1
 
-    def get_blocking_entities_at_location(self, destination_x, destination_y):
+    def get_blocking_entities_at(self, destination_x, destination_y):
         f = lambda e: e.blocks and e.x == destination_x and e.y == destination_y
         return find(f, self.entities)
 
@@ -30,7 +30,7 @@ class ObjectsKeeper:
         destination_y = self.player.y + dy
         attack_results = []
         if self.map.walkable[destination_x, destination_y]:
-            target = self.get_blocking_entities_at_location(destination_x, destination_y)
+            target = self.get_blocking_entities_at(destination_x, destination_y)
             if target:
                 attack_results = self.player.fighter.attack(target)
             else:
@@ -49,7 +49,7 @@ class ObjectsKeeper:
                 self.entities.remove(item)
         return [pickup_results]
 
-    def player_climb_up(self):
+    def player_go_downstairs(self):
         recompute = False
         text = 'There are no stairs here.'
         color = UISettings.yellow
@@ -118,7 +118,6 @@ class ObjectsKeeper:
                           UISettings.orange)
         logger.info('{} is dead.'.format(dead_entity.name))
         if dead_entity == self.player:
-            print('u dead!')
             player_dead = True
             message = Message('You died!', UISettings.red)
         dead_entity.make_dead()

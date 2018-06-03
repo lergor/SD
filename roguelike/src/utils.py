@@ -10,7 +10,7 @@ class RenderOrder(Enum):
     STAIRS = 1
     CORPSE = 2
     ITEM = 3
-    ACTOR = 4
+    MONSTER = 4
     PLAYER = 4
 
 

@@ -23,9 +23,9 @@ class Entity:
         self.color = color
         self.name = name
         self.render_order = render_order
-        self.set_all(**kwargs)
+        self.__set_all(**kwargs)
 
-    def set_all(self, **kwargs):
+    def __set_all(self, **kwargs):
         self.blocks = kwargs.get('blocks')
         self.fighter = kwargs.get('fighter')
         self.ai = kwargs.get('ai')
@@ -58,13 +58,13 @@ class Entity:
         self.x += dx
         self.y += dy
 
-    def move_towards(self, ui, target_x, target_y):
-        path = ui.map.compute_path(self.x, self.y, target_x, target_y)
+    def move_towards(self, obj_keeper, target_x, target_y):
+        path = obj_keeper.map.compute_path(self.x, self.y, target_x, target_y)
         if path:
             dx = path[0][0] - self.x
             dy = path[0][1] - self.y
-            if ui.map.walkable[path[0][0], path[0][1]] and \
-                    not ui.get_blocking_entities_at_location(self.x + dx, self.y + dy):
+            if obj_keeper.map.walkable[path[0][0], path[0][1]] and \
+                    not obj_keeper.get_blocking_entities_at(self.x + dx, self.y + dy):
                 self.move(dx, dy)
 
     def distance_to(self, other):
@@ -115,7 +115,7 @@ class EntityFactory:
         level_component = Level()
         equipment_component = Equipment()
         player = Entity(0, 0, '@', UISettings.white, 'Player', blocks=True,
-                             render_order=RenderOrder.ACTOR,
+                             render_order=RenderOrder.PLAYER,
                              fighter=fighter_component, inventory=inventory_component,
                              level=level_component,
                              equipment=equipment_component)
@@ -145,7 +145,7 @@ class EntityFactory:
         fighter_component = Fighter(hp=hp, defense=defense, power=power, xp=xp)
         ai_component = BasicMonster()
         return Entity(x, y, symbol, color, name, blocks=True, ai=ai_component,
-                      render_order=RenderOrder.ACTOR, fighter=fighter_component)
+                      render_order=RenderOrder.MONSTER, fighter=fighter_component)
 
     @staticmethod
     def __make_item(name, x, y):

@@ -18,10 +18,10 @@ class UIMaster:
                                        UISettings.window_title)
         self.__console = tdl.Console(UISettings.screen_width, UISettings.screen_height)
         self.__panel = tdl.Console(UISettings.screen_width, UISettings.panel_height)
-        self.__screen_master = ScreenSwitcher(self.__console, self.__root_console)
+        self.__screen_switcher = ScreenSwitcher(self.__console, self.__root_console)
 
     def show(self, screen_type, player=None):
-        self.__screen_master.show(screen_type, player)
+        self.__screen_switcher.show(screen_type, player)
 
     def clear_view(self):
         self.__root_console.clear()
@@ -34,12 +34,12 @@ class UIMaster:
         self.__clear_all_entities()
 
     def __clear_all_entities(self):
-        for entity in self.__game.obj_holder.entities:
+        for entity in self.__game.obj_keeper.entities:
             self.__console.draw_char(entity.x, entity.y, ' ', entity.color, bg=None)
 
     def __draw_all_entities(self):
-        map = self.__game.obj_holder.map
-        entities = self.__game.obj_holder.entities
+        map = self.__game.obj_keeper.map
+        entities = self.__game.obj_keeper.entities
         entities_in_render_order = sorted(entities, key=lambda x: x.render_order.value)
         for entity in entities_in_render_order:
             entity.draw(map, self.__console)
@@ -54,35 +54,22 @@ class UIMaster:
         self.__panel.draw_str(x_centered, y, text, fg=UISettings.white, bg=None)
 
     def __recompute(self):
-        map = self.__game.obj_holder.map
-        player = self.__game.obj_holder.player
+        map = self.__game.obj_keeper.map
         if self.__game.recompute:
-            map.compute_fov(player.x, player.y, 'BASIC', 10)
-            for x, y in map:
-                wall = not map.transparent[x, y]
-                if map.fov[x, y]:
-                    color = UISettings.light_ground
-                    if wall:
-                        color = UISettings.light_wall
-                    self.__console.draw_char(x, y, None, fg=None, bg=color)
-                    map.explored[x][y] = True
-                elif map.explored[x][y]:
-                    if wall:
-                        color = UISettings.dark_wall
-                    else:
-                        color = UISettings.dark_ground
-                    self.__console.draw_char(x, y, None, fg=None, bg=color)
+            to_draw = map.recompute()
+            for x, y, color in to_draw:
+                self.__console.draw_char(x, y, None, fg=None, bg=color)
 
     def __render_all(self):
         state = self.__game.state
         self.__recompute()
         self.__draw_all_entities()
         self.__draw_info()
-        self.show(state, player=self.__game.obj_holder.player)
+        self.show(state, player=self.__game.obj_keeper.player)
 
     def __draw_info(self):
-        map = self.__game.obj_holder.map
-        player = self.__game.obj_holder.player
+        map = self.__game.obj_keeper.map
+        player = self.__game.obj_keeper.player
         if player.fighter:
             self.__console.draw_str(1, UISettings.screen_height - 2, 'HP: {0:02}/{1:02}'.format(
                 player.fighter.hp, player.fighter.max_hp))

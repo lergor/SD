@@ -35,9 +35,9 @@ class ScreenSwitcher:
         self.__root_console.draw_str(center, UISettings.screen_height - 2, UISettings.author, bg=None,
                                      fg=UISettings.light_yellow)
 
-        self.__menu('', ['New game', 'About game', 'Quit'], 24)
+        self.__show_window('', ['New game', 'About game', 'Quit'], 24)
 
-    def __menu(self, header, options, width):
+    def __show_window(self, header, options, width):
         header_wrapped = textwrap.wrap(header, width)
         header_height = len(header_wrapped)
         height = len(options) + header_height
@@ -71,7 +71,7 @@ class ScreenSwitcher:
                 options.append('{0} (on off hand)'.format(item.name))
             else:
                 options.append(item.name)
-        self.__menu(inventory_title, options, UISettings.inventory_width)
+        self.__show_window(inventory_title, options, UISettings.inventory_width)
 
     def __character_screen(self, player):
         width, height = UISettings.character_screen
@@ -81,23 +81,23 @@ class ScreenSwitcher:
         options = ['Constitution (+20 HP, from {0})'.format(player.fighter.max_hp),
                    'Strength (+1 attack, from {0})'.format(player.fighter.power),
                    'Agility (+1 defense, from {0})'.format(player.fighter.defense)]
-        self.__menu('', options, UISettings.inventory_width)
+        self.__show_window('', options, UISettings.inventory_width)
 
-    def __info_screen(self, flag=True):
-        if not flag:
+    def __info_screen(self, clear=True):
+        if not clear:
             self.__root_console.clear()
         with open(UISettings.info_file) as f:
             lines = f.readlines()
         width, height = 30, 25
         self.__show_text_window(width, height, lines)
 
-    def __show_text_window(self, width, height, text):
+    def __show_text_window(self, width, height, lines):
         screen_width, screen_height = UISettings.screen_width, UISettings.screen_height
         window = tdl.Console(width, height)
         window.draw_rect(0, 0, width, height,
                          None, fg=UISettings.white, bg=None)
-        for i in range(len(text)):
-            window.draw_str(0, i + 1, text[i].replace('\n', ''))
+        for i in range(len(lines)):
+            window.draw_str(0, i + 1, lines[i].replace('\n', ''))
         x = screen_width // 2 - width // 2
         y = screen_height // 2 - height // 2
         self.__root_console.blit(window, x, y, width,

@@ -1,7 +1,3 @@
-"""
-
-"""
-
 from src.utils import EquipmentSlots
 
 
@@ -50,31 +46,31 @@ class Equipment:
 
         return bonus
 
-    def toggle_equip(self, equippable_entity):
+    def toggle_equip(self, equip):
         results = []
 
-        slot = equippable_entity.equippable.slot
+        slot = equip.equippable.slot
 
         if slot == EquipmentSlots.MAIN_HAND:
-            if self.main_hand == equippable_entity:
+            if self.main_hand == equip:
                 self.main_hand = None
-                results.append({'dequipped': equippable_entity})
+                results.append({'dequipped': equip})
             else:
                 if self.main_hand:
                     results.append({'dequipped': self.main_hand})
 
-                self.main_hand = equippable_entity
-                results.append({'equipped': equippable_entity})
+                self.main_hand = equip
+                results.append({'equipped': equip})
         elif slot == EquipmentSlots.OFF_HAND:
-            if self.off_hand == equippable_entity:
+            if self.off_hand == equip:
                 self.off_hand = None
-                results.append({'dequipped': equippable_entity})
+                results.append({'dequipped': equip})
             else:
                 if self.off_hand:
                     results.append({'dequipped': self.off_hand})
 
-                self.off_hand = equippable_entity
-                results.append({'equipped': equippable_entity})
+                self.off_hand = equip
+                results.append({'equipped': equip})
 
         return results
 
