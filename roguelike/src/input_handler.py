@@ -75,7 +75,7 @@ class InputHandler:
         for event in tdl.event.get():
             if event.type == 'KEYDOWN':
                 if event.key != 'TEXT':
-                    logger.info('Pressed: {} {}.'.format(event.key, event.char))
+                    logger.info('Pressed: {} {}'.format(event.key, event.char))
                 return event
         return None
 

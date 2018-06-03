@@ -102,3 +102,4 @@ class ScreenSwitcher:
         y = screen_height // 2 - height // 2
         self.__root_console.blit(window, x, y, width,
                                  height, 0, 0)
+        tdl.flush()

@@ -32,33 +32,33 @@ class Game:
 
         while not tdl.event.is_window_closed() and not self.state == GameStates.EXIT:
 
-            if self.state == GameStates.MENU:
+            if self.state == GameStates.MENU or self.state == GameStates.INFO:
                 self.ui_holder.show(self.state)
                 flags = self.input_handler.catch_and_process_input(self.state)
                 if flags.new_game:
-                    self.state = GameStates.PLAYER_TURN
+                    self.__change_state(GameStates.PLAYER_TURN)
                 elif flags.show_info_screen:
-                    self.state = GameStates.INFO
+                    self.__change_state(GameStates.INFO)
                 elif flags.exit:
-                    self.state = GameStates.EXIT
-            else:
+                    if self.state != GameStates.INFO:
+                        self.__change_state(GameStates.EXIT)
+                    else:
+                        self.__change_state(self.previous_state)
+            elif self.state == GameStates.PLAYER_TURN:
                 self.ui_holder.clear_view()
                 self.obj_holder.init_objects()
+                self.previous_state = GameStates.MENU
                 self.__start_game()
                 self.state = GameStates.MENU
+                self.obj_holder.player = None
 
     def __change_state(self, new_state):
-        if new_state in {GameStates.LEVEL_UP,
-                          GameStates.SHOW_INVENTORY,
-                          GameStates.DROP_INVENTORY}:
-            logger.info(str(self.state))
         self.previous_state = self.state
         self.state = new_state
 
     def __start_game(self):
         logger.info('Game started.')
         self.recompute = True
-        self.previous_state = GameStates.MENU
 
         while not tdl.event.is_window_closed() \
                 and self.state != GameStates.EXIT:
@@ -71,6 +71,7 @@ class Game:
                                   GameStates.DROP_INVENTORY,
                                   GameStates.CHARACTER_SCREEN,
                                   GameStates.INFO}:
+                    logger.info(str(self.state) + ' --> ' + str(self.previous_state))
                     self.__change_state(self.previous_state)
 
                 else:
