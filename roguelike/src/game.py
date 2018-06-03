@@ -6,6 +6,16 @@ from src.ui_holder import *
 
 
 class Game:
+    """
+    The main class of whole game.
+    Holds InputHandler, ObjectsHolder, UIHolder, MessageLog instances.
+    Provides the correct process of the game. Has method run with an infinite loop.
+    Processes the user input and manages all actions in the game.
+    To start the game create the instance of the Game class and call the method 'run':
+
+    game = Game()
+    game.run()
+    """
 
     def __init__(self):
         self.input_handler = InputHandler()
@@ -61,18 +71,17 @@ class Game:
                               GameStates.SHOW_INVENTORY,
                               GameStates.DROP_INVENTORY,
                               GameStates.LEVEL_UP}:
-                self.player_turn(flags)
+                self.__player_turn(flags)
 
             if self.state == GameStates.ENEMY_TURN:
-                self.enemy_turn()
+                self.__enemy_turn()
 
             if self.state in {GameStates.LEVEL_UP,
                               GameStates.SHOW_INVENTORY,
                               GameStates.DROP_INVENTORY}:
                 self.ui_holder.show(self.state, player=self.obj_holder.player)
 
-
-    def player_turn(self, flags):
+    def __player_turn(self, flags):
         player_turn_results, action_result = [], []
 
         if flags.show_inventory:
@@ -110,11 +119,11 @@ class Game:
         player_turn_results.extend(action_result)
         self.__process_results(player_turn_results)
 
-    def enemy_turn(self):
+    def __enemy_turn(self):
         turn_results = self.obj_holder.enemies_move()
-        self.process_enemies_results(turn_results)
+        self.__process_enemies_results(turn_results)
 
-    def process_enemies_results(self, turn_results):
+    def __process_enemies_results(self, turn_results):
         for turn_result in turn_results:
             flags = Flags(turn_result)
             self.message_log.add_message(flags.message)

@@ -3,6 +3,11 @@ from src.utils import UISettings
 
 
 class Inventory:
+    """
+    The class that holds all inventory which the entity owns.
+    It can add, drop, use and remove items.
+    """
+
     def __init__(self, capacity):
         self.capacity = capacity
         self.items = []

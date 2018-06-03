@@ -3,12 +3,19 @@ from src.utils import UISettings
 
 
 class Message:
+    """
+    The container for one message, holds its text and color.
+    """
+
     def __init__(self, text='', color=(255, 255, 255)):
         self.text = text
         self.color = color
 
 
 class MessageLog:
+    """
+    The container for all game messages.
+    """
 
     def __init__(self):
         self.messages = []

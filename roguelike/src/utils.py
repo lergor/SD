@@ -1,3 +1,6 @@
+"""
+The module with tools and parameters for the game.
+"""
 from tcod import image_load
 from enum import Enum
 
@@ -79,3 +82,34 @@ def find(f, seq):
 class EquipmentSlots(Enum):
     MAIN_HAND = 1
     OFF_HAND = 2
+
+
+ACTIVE_KEYS = {
+    'UP': {'move': (0, -1)},
+    'DOWN': {'move': (0, 1)},
+    'LEFT': {'move': (-1, 0)},
+    'RIGHT': {'move': (1, 0)},
+    'ESCAPE': {'exit': True}
+}
+
+
+ACTIVE_CHARS = {
+    'u': {'move': (0, -1)},
+    'j': {'move': (0, 1)},
+    'h': {'move': (-1, 0)},
+    'k': {'move': (1, 0)},
+    'y': {'move': (-1, -1)},
+    'i': {'move': (1, -1)},
+    'n': {'move': (-1, 1)},
+    'm': {'move': (1, 1)},
+    'w': {'wait': True},
+    's': {'pickup': True},
+    'a': {'show_inventory': True},
+    'x': {'drop_inventory': True},
+    'c': {'show_character_screen': True},
+    'd': {'take_stairs' : True},
+    'aa': {'new_game': True},
+    'bb': {'info': True},
+    'q': {'info': True},
+    'cc': {'exit': True}
+}

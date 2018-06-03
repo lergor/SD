@@ -2,6 +2,11 @@ from src.messages import Message
 
 
 class Fighter:
+    """
+    The role of Fighter for an entity.
+    Fighter has a health points, a power, a defense.
+    Fighter can attack, be healed and take damage from enemies.
+    """
 
     def __init__(self, hp, defense, power, xp=0):
         self.base_max_hp = hp

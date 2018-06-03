@@ -1,7 +1,16 @@
+"""
+
+"""
+
 from src.utils import EquipmentSlots
 
 
 class Equipment:
+    """
+    The class that holds both slots - the right hand ang the left one,
+    and manages them and interactions with them.
+    The Entity can toggle equipments it owns.
+    """
 
     def __init__(self, main_hand=None, off_hand=None):
         self.main_hand = main_hand
@@ -69,7 +78,11 @@ class Equipment:
 
         return results
 
+
 class Equippable:
+    """
+    The class that holds an equipment in the right hand or in the left one.
+    """
 
     def __init__(self, slot, power_bonus=0, defense_bonus=0, max_hp_bonus=0):
         self.slot = slot

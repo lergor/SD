@@ -4,6 +4,9 @@ from src.utils import UISettings
 
 
 class UIHolder:
+    """
+    The class that draws all entities and manage actions with the graphics.
+    """
 
     def __init__(self, game):
         self.__game = game

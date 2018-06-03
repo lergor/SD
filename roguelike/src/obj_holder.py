@@ -1,13 +1,18 @@
-from src.entity import EntityFabric
+from src.entity import EntityFactory
 from src.map import GameMap
 from src.screen_switcher import *
 from src.messages import Message
 
 
 class ObjectsHolder:
+    """
+    Manages all objects of the game such as map and entities.
+    Performs actions of the objects mostly for the player.
+
+    """
 
     def init_objects(self):
-        self.player = EntityFabric.create_player()
+        self.player = EntityFactory.create_player()
         self.entities = [self.player]
         self.map = GameMap(self.entities)
         self.level = 1

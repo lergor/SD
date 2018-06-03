@@ -9,6 +9,11 @@ from src.game_objects.level import Level
 
 
 class Entity:
+    """
+    The main class for all entities in the game. It contains all
+    accessories of the entity and methods for interactions
+    with other entities and essential behavior on the high level.
+    """
 
     def __init__(self, x, y, char, color, name,
                  render_order=RenderOrder.CORPSE, **kwargs):
@@ -97,7 +102,11 @@ class Entity:
                           'Attack: {0}'.format(self.fighter.power),
                           'Defense: {0}'.format(self.fighter.defense)]
 
-class EntityFabric:
+
+class EntityFactory:
+    """
+    The static factory that creates entities.
+    """
 
     @staticmethod
     def create_player():
@@ -143,12 +152,12 @@ class EntityFabric:
             item_component, equippable_component = None, None
             if name == 'Healing potion':
                 item_component = Item(use_function=Item.heal, amount=40)
-                sym, color = '!', UISettings.violet
+                sym, color = '+', UISettings.violet
             if name == 'Sword':
                 equippable_component = Equippable(EquipmentSlots.MAIN_HAND, power_bonus=3)
-                sym, color = '/', UISettings.sky
+                sym, color = 'T', UISettings.sky
             if name == 'Shield':
                 equippable_component = Equippable(EquipmentSlots.OFF_HAND, defense_bonus=1)
-                sym, color = '[', UISettings.darker_orange
+                sym, color = 'O', UISettings.darker_orange
             return Entity(x, y, sym, color, name, render_order=RenderOrder.ITEM,
                           item=item_component, equippable=equippable_component)

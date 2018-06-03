@@ -1,11 +1,15 @@
 from tdl.map import Map
 from random import randint
-from src.entity import EntityFabric
+from src.entity import EntityFactory
 from src.utils import *
 from numpy.random import choice
 
 
 class GameMap(Map):
+    """
+    The class that represents a map of the game on the current level.
+    Also initiates and places all entities on the map.
+    """
 
     def __init__(self, entities, level=1):
         super().__init__(UISettings.map_width, UISettings.map_height)
@@ -27,10 +31,10 @@ class GameMap(Map):
                 self.__mark_on_map(new_room)
                 if len(rooms) > 0:
                     self.__connect_rooms(rooms[-1], new_room)
-                new_room.place_entities(self.dungeon_level, self.entities)
+                self.place_entities(new_room, self.dungeon_level, self.entities)
                 rooms.append(new_room)
         self.player.x, self.player.y = rooms[0].center()
-        down_stairs = EntityFabric.make_stairs(rooms[-1])
+        down_stairs = EntityFactory.make_stairs(rooms[-1])
         self.entities.append(down_stairs)
 
     def __mark_on_map(self, room):
@@ -59,8 +63,50 @@ class GameMap(Map):
             self.walkable[x, y] = True
             self.transparent[x, y] = True
 
+    def place_entities(self, room, level, entities):
+        monsters_per_room = self.__from_dungeon_level([[2, 1], [3, 4], [5, 7]], level)
+        items_per_room = self.__from_dungeon_level([[1, 1], [2, 4]], level)
+        monster_chances = {
+            'Spider': 80,
+            'Bat': self.__from_dungeon_level([[15, 3], [30, 5], [60, 7]], level),
+            'Snake': self.__from_dungeon_level([[0, 3], [10, 5], [50, 7], [80, 10]], level)
+        }
+        item_chances = {
+            'Healing potion': 35,
+            'Sword': self.__from_dungeon_level([[5, 4]], level),
+            'Shield': self.__from_dungeon_level([[15, 8]], level)
+        }
+        self.__place(room, monsters_per_room, monster_chances, entities)
+        self.__place(room, items_per_room, item_chances, entities)
+
+    def __from_dungeon_level(self, table, level):
+        for (value, level_value) in reversed(table):
+            if level >= level_value:
+                return value
+        return 0
+
+    def __place(self, room, num_per_room, chances, entities):
+        amount = randint(0, num_per_room)
+        for i in range(amount):
+            x = randint(room.x1 + 1, room.x2 - 1)
+            y = randint(room.y1 + 1, room.y2 - 1)
+
+            if not any([entity for entity in entities if entity.x == x and entity.y == y]):
+                monster_choice = self.__choice_from_dict(chances)
+                monster = EntityFactory.make_entity(monster_choice, x, y)
+                entities.append(monster)
+
+    def __choice_from_dict(elf, choice_dict):
+        choices = list(choice_dict.keys())
+        chances = list(choice_dict.values())
+        decimal_chances = [chance / sum(chances) for chance in chances]
+        return choice(choices, p=decimal_chances)
+
 
 class Room:
+    """
+    The class for one room in the dungeon.
+    """
 
     def __init__(self):
         w = randint(UISettings.room_min_size, UISettings.room_max_size)
@@ -78,47 +124,3 @@ class Room:
     def intersect(self, other):
         return (self.x1 <= other.x2 and self.x2 >= other.x1 and
                 self.y1 <= other.y2 and self.y2 >= other.y1)
-
-    def place_entities(self, level, entities):
-        monsters_per_room = self.__from_dungeon_level([[2, 1], [3, 4], [5, 7]], level)
-        items_per_room = self.__from_dungeon_level([[1, 1], [2, 4]], level)
-        monster_chances = {
-            'Spider': 80,
-            'Bat': self.__from_dungeon_level([[15, 3], [30, 5], [60, 7]], level),
-            'Snake': self.__from_dungeon_level([[0, 3], [10, 5], [50, 7], [80, 10]], level)
-        }
-        # item_chances = {
-        #     'Healing potion': 35,
-        #     'Sword': self.__from_dungeon_level([[5, 4]], level),
-        #     'Shield': self.__from_dungeon_level([[15, 8]], level)
-        # }
-        item_chances = {
-            'Healing potion': 20,
-            'Sword': 100,
-            'Shield': 20
-        }
-        self.__place(monsters_per_room, monster_chances, entities)
-        self.__place(items_per_room, item_chances, entities)
-
-    def __from_dungeon_level(self, table, level):
-        for (value, level_value) in reversed(table):
-            if level >= level_value:
-                return value
-        return 0
-
-    def __place(self, num_per_room, chances, entities):
-        amount = randint(0, num_per_room)
-        for i in range(amount):
-            x = randint(self.x1 + 1, self.x2 - 1)
-            y = randint(self.y1 + 1, self.y2 - 1)
-
-            if not any([entity for entity in entities if entity.x == x and entity.y == y]):
-                monster_choice = self.__choice_from_dict(chances)
-                monster = EntityFabric.make_entity(monster_choice, x, y)
-                entities.append(monster)
-
-    def __choice_from_dict(elf, choice_dict):
-        choices = list(choice_dict.keys())
-        chances = list(choice_dict.values())
-        decimal_chances = [chance / sum(chances) for chance in chances]
-        return choice(choices, p=decimal_chances)

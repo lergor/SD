@@ -3,6 +3,10 @@ from src.utils import UISettings
 
 
 class Item:
+    """
+    It's a class for items in the game.
+    Has static methods for items, for example, heal for a healing potion.
+    """
 
     def __init__(self, use_function=None, targeting=False, targeting_message=None, **kwargs):
         self.use_function = use_function

@@ -1,6 +1,9 @@
 
 
 class BasicMonster:
+    """
+    The monsters in dungeons that hunt the hero and injury it.
+    """
 
     def take_turn(self, target, ui):
         results = []

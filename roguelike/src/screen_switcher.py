@@ -4,6 +4,9 @@ from src.utils import *
 
 
 class ScreenSwitcher:
+    """
+    This class is responsible for switching the menu screens.
+    """
 
     def __init__(self, console, root_console):
         self.__console = console

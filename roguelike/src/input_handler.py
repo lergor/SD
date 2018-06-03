@@ -1,38 +1,11 @@
 import tdl
-from src.utils import GameStates
-
-
-ACTIVE_KEYS = {
-    'UP': {'move': (0, -1)},
-    'DOWN': {'move': (0, 1)},
-    'LEFT': {'move': (-1, 0)},
-    'RIGHT': {'move': (1, 0)},
-    'ESCAPE': {'exit': True}
-}
-
-ACTIVE_CHARS = {
-    'u': {'move': (0, -1)},
-    'j': {'move': (0, 1)},
-    'h': {'move': (-1, 0)},
-    'k': {'move': (1, 0)},
-    'y': {'move': (-1, -1)},
-    'i': {'move': (1, -1)},
-    'n': {'move': (-1, 1)},
-    'm': {'move': (1, 1)},
-    'w': {'wait': True},
-    's': {'pickup': True},
-    'a': {'show_inventory': True},
-    'x': {'drop_inventory': True},
-    'c': {'show_character_screen': True},
-    'd': {'take_stairs' : True},
-    'aa': {'new_game': True},
-    'bb': {'info': True},
-    'q': {'info': True},
-    'cc': {'exit': True}
-}
+from src.utils import *
 
 
 class Flags:
+    """
+    contains an interpretation of user input.
+    """
 
     def __init__(self, input_dict=None):
         if input_dict:
@@ -79,6 +52,9 @@ class Flags:
 
 
 class InputHandler:
+    """
+    The class that listens to the user input and convert it into Flags.
+    """
 
     def __init__(self):
         self.game_state = GameStates.PLAYER_TURN
