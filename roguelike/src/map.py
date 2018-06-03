@@ -7,14 +7,16 @@ from numpy.random import choice
 
 class GameMap(Map):
 
-    def __init__(self, player, dungeon_level=1):
+    def __init__(self, entities, level=1):
         super().__init__(UISettings.map_width, UISettings.map_height)
+        self.player = entities[0]
+        self.entities = entities
+        self.dungeon_level = level
         self.explored = [[False for y in range(UISettings.map_height)]
                          for x in range(UISettings.map_width)]
-        self.dungeon_level = dungeon_level
-        self.player = player
+        self.__make_map()
 
-    def make_map(self, entities):
+    def __make_map(self):
         rooms = []
         for r in range(UISettings.max_rooms):
             new_room = Room()
@@ -25,18 +27,11 @@ class GameMap(Map):
                 self.__mark_on_map(new_room)
                 if len(rooms) > 0:
                     self.__connect_rooms(rooms[-1], new_room)
-                new_room.place_entities(self.dungeon_level, entities)
+                new_room.place_entities(self.dungeon_level, self.entities)
                 rooms.append(new_room)
         self.player.x, self.player.y = rooms[0].center()
-        down_stairs = EntityFabric.make_stairs(rooms[-1], self.dungeon_level)
-        entities.append(down_stairs)
-
-    def next_floor(self, player, level):
-        game_map = GameMap(self.dungeon_level)
-        entities = [self.player]
-        self.make_map(entities)
-        player.fighter.heal(player.fighter.max_hp // 2)
-        return game_map, entities
+        down_stairs = EntityFabric.make_stairs(rooms[-1])
+        self.entities.append(down_stairs)
 
     def __mark_on_map(self, room):
         for x in range(room.x1 + 1, room.x2):
@@ -89,13 +84,18 @@ class Room:
         items_per_room = self.__from_dungeon_level([[1, 1], [2, 4]], level)
         monster_chances = {
             'Spider': 80,
-            'Snake': self.__from_dungeon_level([[15, 3], [30, 5], [60, 7]], level),
-            'Bat': self.__from_dungeon_level([[0, 3], [10, 5], [50, 7], [80, 10]], level)
+            'Bat': self.__from_dungeon_level([[15, 3], [30, 5], [60, 7]], level),
+            'Snake': self.__from_dungeon_level([[0, 3], [10, 5], [50, 7], [80, 10]], level)
         }
+        # item_chances = {
+        #     'Healing potion': 35,
+        #     'Sword': self.__from_dungeon_level([[5, 4]], level),
+        #     'Shield': self.__from_dungeon_level([[15, 8]], level)
+        # }
         item_chances = {
-            'Healing potion': 35,
-            'Sword': self.__from_dungeon_level([[5, 4]], level),
-            'Shield': self.__from_dungeon_level([[15, 8]], level)
+            'Healing potion': 20,
+            'Sword': 100,
+            'Shield': 20
         }
         self.__place(monsters_per_room, monster_chances, entities)
         self.__place(items_per_room, item_chances, entities)

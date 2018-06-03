@@ -1,9 +1,6 @@
-import tdl
 from src.entity import EntityFabric
 from src.map import GameMap
-from src.utils import *
-from src.screen_handler import *
-from src.world.characters.level import Level
+from src.screen_switcher import *
 from src.messages import Message
 
 
@@ -12,9 +9,8 @@ class ObjectsHolder:
     def init_objects(self):
         self.player = EntityFabric.create_player()
         self.entities = [self.player]
-        self.map = GameMap(self.player)
-        self.map.make_map(self.entities)
-        self.level = Level()
+        self.map = GameMap(self.entities)
+        self.level = 1
 
     def get_blocking_entities_at_location(self, destination_x, destination_y):
         f = lambda e: e.blocks and e.x == destination_x and e.y == destination_y
@@ -34,7 +30,7 @@ class ObjectsHolder:
         return attack_results
 
     def player_pickup(self):
-        message = Message('There is nothing here to pick up.', UISettings.colors.get('yellow'))
+        message = Message('There is nothing here to pick up.', UISettings.yellow)
         pickup_results = {'message': message}
         item = find(lambda e: e.item and self.player.overlap(e), self.entities)
         if item:
@@ -46,36 +42,74 @@ class ObjectsHolder:
     def player_climb_up(self):
         recompute = False
         text = 'There are no stairs here.'
-        color = UISettings.colors.get('yellow')
+        color = UISettings.yellow
         stairs_entity = find(lambda e: e.stairs and self.player.overlap(e), self.entities)
         if stairs_entity:
             recompute = True
             text = 'You take a moment to rest, and recover your strength.'
-            color = UISettings.colors.get('light_violet')
-            self.map, self.entities = self.map.next_floor(self.player, stairs_entity.stairs.floor)
+            color = UISettings.light_violet
+            self.next_floor()
         return [{'message': Message(text, color)}], recompute
+
+    def next_floor(self):
+        self.entities = [self.player]
+        self.level += 1
+        self.map = GameMap(self.entities, self.level)
 
     def player_level_up(self, level_up):
         if level_up == 'hp':
             self.player.fighter.base_max_hp += 20
             self.player.fighter.hp += 20
+            ability = 'health'
         elif level_up == 'str':
             self.player.fighter.base_power += 1
+            ability = 'power'
         elif level_up == 'def':
             self.player.fighter.base_defense += 1
+            ability = 'defense'
+        message = Message('Your {0} became stronger!'.format(ability), UISettings.green)
+        return [{'message': message}]
+
+    def player_add_xp(self, xp):
+        leveled_up = self.player.level.add_xp(xp)
+        message = Message('You gain {0} experience points.'.format(xp))
+        if leveled_up:
+            text = 'Your battle skills grow stronger! You reached level {0}'.format(
+                self.player.level.current_level) + '!'
+            message = Message(text, UISettings.yellow)
+        return leveled_up, message
+
+    def player_toggle_equip(self, equip):
+        messages = []
+        equip_results = self.player.equipment.toggle_equip(equip)
+        for equip_result in equip_results:
+            for action in ['equipped', 'dequipped']:
+                item = equip_result.get(action)
+                if item:
+                    messages.append(Message('You {0} the {1}'.format(action,
+                        item.name)))
+        return messages
+
+    def player_inventory(self, index, state):
+        action_result = []
+        if state == GameStates.SHOW_INVENTORY:
+            action_result = self.player.inventory.use(index)
+        elif state == GameStates.DROP_INVENTORY:
+            action_result = self.player.inventory.drop_item(index)
+        return action_result
 
     def kill_entity(self, dead_entity):
         player_dead = False
+        message = Message('{0} is dead!'.format(dead_entity.name.capitalize()),
+                          UISettings.orange)
         if dead_entity == self.player:
+            print('u dead!')
             player_dead = True
-            message = Message('You died!', UISettings.colors.get('red'))
-        else:
-            message = Message('{0} is dead!'.format(dead_entity.name.capitalize()),
-                                    UISettings.colors.get('orange'))
+            message = Message('You died!', UISettings.red)
         dead_entity.make_dead()
         return message, player_dead
 
-    def enemies_move(self, state):
+    def enemies_move(self):
         enemy_turn_results = []
         for entity in self.entities:
             if entity.ai:

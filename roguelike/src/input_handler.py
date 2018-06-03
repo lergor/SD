@@ -1,5 +1,5 @@
-from src.utils import GameStates
 import tdl
+from src.utils import GameStates
 
 
 ACTIVE_KEYS = {
@@ -21,14 +21,14 @@ ACTIVE_CHARS = {
     'm': {'move': (1, 1)},
     'w': {'wait': True},
     's': {'pickup': True},
-    'd': {'damage': True},
     'a': {'show_inventory': True},
     'x': {'drop_inventory': True},
-    'q': {'show_character_screen': True},
-    'g': {'take_stairs' : True},
-    '1': {'new_game': True},
-    '2': {'info': True},
-    '3': {'exit': True}
+    'c': {'show_character_screen': True},
+    'd': {'take_stairs' : True},
+    'aa': {'new_game': True},
+    'bb': {'info': True},
+    'q': {'info': True},
+    'cc': {'exit': True}
 }
 
 
@@ -42,7 +42,7 @@ class Flags:
 
     def __clear(self):
         self.new_game = None
-        self.info = None
+        self.show_info_screen = None
         self.exit = None
         self.move = None
         self.wait = None
@@ -58,7 +58,7 @@ class Flags:
     def update(self, input_dict):
         self.__clear()
         self.new_game = input_dict.get('new_game')
-        self.info = input_dict.get('info')
+        self.show_info_screen = input_dict.get('info')
         self.exit = input_dict.get('exit')
         self.move = input_dict.get('move')
         self.wait = input_dict.get('wait')
@@ -69,7 +69,6 @@ class Flags:
         self.take_stairs = input_dict.get('take_stairs')
         self.level_up = input_dict.get('level_up')
         self.show_character_screen = input_dict.get('show_character_screen')
-        self.fullscreen = input_dict.get('fullscreen')
         self.message = input_dict.get('message')
         self.dead_entity = input_dict.get('dead')
         self.item_added = input_dict.get('item_added')
@@ -89,6 +88,7 @@ class InputHandler:
             GameStates.PLAYER_DEAD: self.__handle_player_dead_keys,
             GameStates.SHOW_INVENTORY: self.__handle_inventory_keys,
             GameStates.DROP_INVENTORY: self.__handle_inventory_keys,
+            GameStates.LEVEL_UP: self.__handle_level_up,
             GameStates.MENU: self.__handle_main_menu
         }
 
@@ -103,7 +103,6 @@ class InputHandler:
         self.game_state = state
         self.user_input = self.__catch_input()
         if self.user_input:
-            print(self.user_input.key, self.user_input.char)
             if self.user_input.key == 'ESCAPE':
                 action = {'exit': True}
             else:
@@ -135,6 +134,14 @@ class InputHandler:
 
     def __handle_main_menu(self):
         key_char = self.user_input.char
-        if key_char in {'1', '2', '3'}:
-            return ACTIVE_CHARS.get(key_char)
+        if key_char in {'a', 'b', 'c'}:
+            return ACTIVE_CHARS.get(key_char + key_char)
+        return {}
+
+    def __handle_level_up(self):
+        if self.user_input.char:
+            choices = ['hp', 'str', 'def']
+            index = ord(self.user_input.char) - ord('a')
+            if index < len(choices):
+                return {'level_up': choices[index]}
         return {}

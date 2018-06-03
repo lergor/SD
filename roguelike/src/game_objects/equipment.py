@@ -2,6 +2,7 @@ from src.utils import EquipmentSlots
 
 
 class Equipment:
+
     def __init__(self, main_hand=None, off_hand=None):
         self.main_hand = main_hand
         self.off_hand = off_hand
@@ -9,10 +10,8 @@ class Equipment:
     @property
     def max_hp_bonus(self):
         bonus = 0
-
         if self.main_hand and self.main_hand.equippable:
             bonus += self.main_hand.equippable.max_hp_bonus
-
         if self.off_hand and self.off_hand.equippable:
             bonus += self.off_hand.equippable.max_hp_bonus
 
@@ -69,3 +68,11 @@ class Equipment:
                 results.append({'equipped': equippable_entity})
 
         return results
+
+class Equippable:
+
+    def __init__(self, slot, power_bonus=0, defense_bonus=0, max_hp_bonus=0):
+        self.slot = slot
+        self.power_bonus = power_bonus
+        self.defense_bonus = defense_bonus
+        self.max_hp_bonus = max_hp_bonus

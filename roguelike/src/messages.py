@@ -3,7 +3,7 @@ from src.utils import UISettings
 
 
 class Message:
-    def __init__(self, text, color=(255, 255, 255)):
+    def __init__(self, text='', color=(255, 255, 255)):
         self.text = text
         self.color = color
 

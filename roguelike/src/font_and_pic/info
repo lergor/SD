@@ -1,0 +1,17 @@
+Control:
+up | u - move up
+down | j - move down
+right | k - move right
+left | h - move left
+y, i, n, m - move diagonally
+w - skip your move
+s - pickup an item
+d - go downstairs
+a - show an inventory
+x - drop an inventory
+c - show hero information
+
+Enemies:
+x - spider
+V - bat
+& - snake

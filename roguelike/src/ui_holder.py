@@ -1,104 +1,100 @@
 import tdl
-
-from src.screen_handler import ScreenHandler
-from src.utils import UISettings, GameStates
+from src.screen_switcher import ScreenSwitcher
+from src.utils import UISettings
 
 
 class UIHolder:
 
     def __init__(self, game):
-        self.game = game
+        self.__game = game
 
     def init_ui(self):
         tdl.set_font(UISettings.game_font, greyscale=True, altLayout=True)
-        self.root_console = tdl.init(UISettings.screen_width, UISettings.screen_height,
-                                     UISettings.window_title)
-        self.console = tdl.Console(UISettings.screen_width, UISettings.screen_height)
-        self.panel = tdl.Console(UISettings.screen_width, UISettings.panel_height)
-        self.screen_handler = ScreenHandler(self.console, self.root_console)
+        self.__root_console = tdl.init(UISettings.screen_width, UISettings.screen_height,
+                                       UISettings.window_title)
+        self.__console = tdl.Console(UISettings.screen_width, UISettings.screen_height)
+        self.__panel = tdl.Console(UISettings.screen_width, UISettings.panel_height)
+        self.__screen_master = ScreenSwitcher(self.__console, self.__root_console)
 
-    def show(self, screen_type, **kwargs):
-        self.screen_handler.show(screen_type, **kwargs)
+    def show(self, screen_type, player=None):
+        self.__screen_master.show(screen_type, player)
 
     def clear_view(self):
-        self.root_console.clear()
-        self.console.clear()
-        self.panel.clear()
+        self.__root_console.clear()
+        self.__console.clear()
+        self.__panel.clear()
 
     def renew_view(self):
-        self.render_all()
+        self.__render_all()
         tdl.flush()
-        self.clear_all_entities()
+        self.__clear_all_entities()
 
-    def clear_all_entities(self):
-        for entity in self.game.obj_holder.entities:
-            self.console.draw_char(entity.x, entity.y, ' ', entity.color, bg=None)
+    def __clear_all_entities(self):
+        for entity in self.__game.obj_holder.entities:
+            self.__console.draw_char(entity.x, entity.y, ' ', entity.color, bg=None)
 
-    def render_bar(self, x, y, name, value, maximum):
+    def __draw_all_entities(self):
+        map = self.__game.obj_holder.map
+        entities = self.__game.obj_holder.entities
+        entities_in_render_order = sorted(entities, key=lambda x: x.render_order.value)
+        for entity in entities_in_render_order:
+            entity.draw(map, self.__console)
+
+    def __render_bar(self, x, y, name, value, maximum):
         bar_width = int(float(value) / maximum * UISettings.bar_width)
-        self.panel.draw_rect(x, y, UISettings.bar_width, 1, None, bg=UISettings.colors.get('darker_red'))
+        self.__panel.draw_rect(x, y, UISettings.bar_width, 1, None, bg=UISettings.darker_red)
         if bar_width > 0:
-            self.panel.draw_rect(x, y, bar_width, 1, None, bg=UISettings.colors.get('light_red'))
+            self.__panel.draw_rect(x, y, bar_width, 1, None, bg=UISettings.light_red)
         text = name + ': ' + str(value) + '/' + str(maximum)
         x_centered = x + int((UISettings.bar_width - len(text)) / 2)
+        self.__panel.draw_str(x_centered, y, text, fg=UISettings.white, bg=None)
 
-        self.panel.draw_str(x_centered, y, text, fg=UISettings.colors.get('white'), bg=None)
-
-    def render_all(self):
-        map = self.game.obj_holder.map
-        player = self.game.obj_holder.player
-        entities = self.game.obj_holder.entities
-        message_log = self.game.message_log
-        state = self.game.state
-        if self.game.recompute:
-            map.compute_fov(player.x, player.y,fov=UISettings.fov_algorithm,
-                            radius=UISettings.fov_radius, light_walls=UISettings.fov_light_walls)
-
+    def __recompute(self):
+        map = self.__game.obj_holder.map
+        player = self.__game.obj_holder.player
+        if self.__game.recompute:
+            map.compute_fov(player.x, player.y, 'BASIC', 10)
             for x, y in map:
                 wall = not map.transparent[x, y]
-
                 if map.fov[x, y]:
+                    color = UISettings.light_ground
                     if wall:
-                        color = UISettings.colors.get('light_wall')
-                    else:
-                        color = UISettings.colors.get('light_ground')
-                    self.console.draw_char(x, y, None, fg=None, bg=color)
+                        color = UISettings.light_wall
+                    self.__console.draw_char(x, y, None, fg=None, bg=color)
                     map.explored[x][y] = True
                 elif map.explored[x][y]:
                     if wall:
-                        color = UISettings.colors.get('dark_wall')
+                        color = UISettings.dark_wall
                     else:
-                        color = UISettings.colors.get('dark_ground')
-                    self.console.draw_char(x, y, None, fg=None, bg=color)
+                        color = UISettings.dark_ground
+                    self.__console.draw_char(x, y, None, fg=None, bg=color)
 
-        entities_in_render_order = sorted(entities, key=lambda x: x.render_order.value)
+    def __render_all(self):
+        state = self.__game.state
+        self.__recompute()
+        self.__draw_all_entities()
+        self.__draw_info()
+        self.show(state, player=self.__game.obj_holder.player)
 
-        for entity in entities_in_render_order:
-            entity.draw(map, self.console)
+    def __draw_info(self):
+        map = self.__game.obj_holder.map
+        player = self.__game.obj_holder.player
         if player.fighter:
-            self.console.draw_str(1, UISettings.screen_height - 2, 'HP: {0:02}/{1:02}'.format(
+            self.__console.draw_str(1, UISettings.screen_height - 2, 'HP: {0:02}/{1:02}'.format(
                 player.fighter.hp, player.fighter.max_hp))
+        self.__root_console.blit(self.__console, 0, 0, UISettings.screen_width, UISettings.screen_height, 0, 0)
+        self.__panel.clear(fg=UISettings.white, bg=UISettings.black)
+        self.__draw_messages()
+        if player.fighter:
+            self.__render_bar(1, 1, 'HP', player.fighter.hp, player.fighter.max_hp)
+        self.__panel.draw_str(1, 3, 'Dungeon Level: {0}'.format(map.dungeon_level),
+                              fg=UISettings.white, bg=None)
+        self.__root_console.blit(self.__panel, 0, UISettings.panel_y, UISettings.screen_width,
+                                 UISettings.panel_height, 0, 0)
 
-        self.root_console.blit(self.console, 0, 0, UISettings.screen_width, UISettings.screen_height, 0, 0)
-
-        self.panel.clear(fg=UISettings.colors.get('white'), bg=UISettings.colors.get('black'))
+    def __draw_messages(self):
+        message_log = self.__game.message_log
         y = 1
         for message in message_log.messages:
-            self.panel.draw_str(message_log.x, y, message.text, bg=None, fg=message.color)
+            self.__panel.draw_str(message_log.x, y, message.text, bg=None, fg=message.color)
             y += 1
-        if  player.fighter:
-            self.render_bar(1, 1, 'HP', player.fighter.hp, player.fighter.max_hp)
-
-        self.panel.draw_str(1, 3, 'Dungeon Level: {0}'.format(map.dungeon_level),
-                            fg=UISettings.colors.get('white'), bg=None)
-
-        self.root_console.blit(self.panel, 0, UISettings.panel_y, UISettings.screen_width,
-                               UISettings.panel_height, 0, 0)
-
-        if state in {GameStates.SHOW_INVENTORY, GameStates.DROP_INVENTORY}:
-            self.screen_handler.inventory_menu(player)
-
-        elif state == GameStates.CHARACTER_SCREEN:
-            self.screen_handler.character_screen(self.root_console, player, 30, 10,
-                                                 UISettings.screen_width, UISettings.screen_height)
-
