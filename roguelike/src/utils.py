@@ -3,7 +3,7 @@ The module with tools and parameters for the game.
 """
 from tcod import image_load
 from enum import Enum
-
+import logging
 
 class RenderOrder(Enum):
     STAIRS = 1
@@ -113,3 +113,15 @@ ACTIVE_CHARS = {
     'q': {'info': True},
     'cc': {'exit': True}
 }
+
+
+def get_logger(name):
+    name = name.split('.')[-1]
+    logger = logging.getLogger(name)
+    logger.setLevel(logging.INFO)
+    handler = logging.FileHandler('roguelike_info.log')
+    handler.setLevel(logging.INFO)
+    formatter = logging.Formatter('%(name)s   %(levelname)s   %(message)s')
+    handler.setFormatter(formatter)
+    logger.addHandler(handler)
+    return logger

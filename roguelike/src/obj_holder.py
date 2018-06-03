@@ -4,17 +4,20 @@ from src.screen_switcher import *
 from src.messages import Message
 
 
+logger = get_logger(__name__)
+
+
 class ObjectsHolder:
     """
     Manages all objects of the game such as map and entities.
     Performs actions of the objects mostly for the player.
-
     """
 
     def init_objects(self):
         self.player = EntityFactory.create_player()
         self.entities = [self.player]
         self.map = GameMap(self.entities)
+        logger.info('Created player: ({}, {})'.format(self.player.x, self.player.y))
         self.level = 1
 
     def get_blocking_entities_at_location(self, destination_x, destination_y):
@@ -32,6 +35,7 @@ class ObjectsHolder:
                 attack_results = self.player.fighter.attack(target)
             else:
                 self.player.move(dx, dy)
+        logger.info('Player: ({}, {})'.format(self.player.x, self.player.y))
         return attack_results
 
     def player_pickup(self):
@@ -41,6 +45,7 @@ class ObjectsHolder:
         if item:
             pickup_results.update(self.player.inventory.add_item(item))
             if pickup_results.get('item_added'):
+                logger.info('Player picks up {}'.format(item.name))
                 self.entities.remove(item)
         return [pickup_results]
 
@@ -52,6 +57,7 @@ class ObjectsHolder:
         if stairs_entity:
             recompute = True
             text = 'You take a moment to rest, and recover your strength.'
+            logger.info('Player goes downstairs: ({}, {})'.format(self.player.x, self.player.y))
             color = UISettings.light_violet
             self.next_floor()
         return [{'message': Message(text, color)}], recompute
@@ -73,14 +79,16 @@ class ObjectsHolder:
             self.player.fighter.base_defense += 1
             ability = 'defense'
         message = Message('Your {0} became stronger!'.format(ability), UISettings.green)
+        logger.info('Player improves ' + ability)
         return [{'message': message}]
 
     def player_add_xp(self, xp):
         leveled_up = self.player.level.add_xp(xp)
         message = Message('You gain {0} experience points.'.format(xp))
         if leveled_up:
-            text = 'Your battle skills grow stronger! You reached level {0}'.format(
-                self.player.level.current_level) + '!'
+            level = self.player.level.current_level
+            text = 'Your battle skills grow stronger! You reached level {0}'.format(level) + '!'
+            logger.info('Player reached level {}'.format(level))
             message = Message(text, UISettings.yellow)
         return leveled_up, message
 
@@ -93,6 +101,7 @@ class ObjectsHolder:
                 if item:
                     messages.append(Message('You {0} the {1}'.format(action,
                         item.name)))
+                    logger.info('Player {} the {}'.format(action, item.name))
         return messages
 
     def player_inventory(self, index, state):
@@ -107,6 +116,7 @@ class ObjectsHolder:
         player_dead = False
         message = Message('{0} is dead!'.format(dead_entity.name.capitalize()),
                           UISettings.orange)
+        logger.info('{} is dead.'.format(dead_entity.name))
         if dead_entity == self.player:
             print('u dead!')
             player_dead = True

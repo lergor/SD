@@ -28,7 +28,6 @@ class Inventory:
         if index < len(self.items):
             item_entity = self.items[index]
             item_component = item_entity.item
-            print('DEBUG', index, str(item_entity.name))
             if item_component.use_function is None:
                 equippable_component = item_entity.equippable
                 if equippable_component:

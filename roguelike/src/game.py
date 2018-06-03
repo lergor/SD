@@ -5,6 +5,9 @@ from src.messages import *
 from src.ui_holder import *
 
 
+logger = get_logger(__name__)
+
+
 class Game:
     """
     The main class of whole game.
@@ -45,17 +48,22 @@ class Game:
                 self.state = GameStates.MENU
 
     def __change_state(self, new_state):
+        if new_state in {GameStates.LEVEL_UP,
+                          GameStates.SHOW_INVENTORY,
+                          GameStates.DROP_INVENTORY}:
+            logger.info(str(self.state))
         self.previous_state = self.state
         self.state = new_state
 
     def __start_game(self):
+        logger.info('Game started.')
         self.recompute = True
+        self.previous_state = GameStates.MENU
 
         while not tdl.event.is_window_closed() \
                 and self.state != GameStates.EXIT:
             self.ui_holder.renew_view()
             self.recompute = False
-            self.previous_state = GameStates.MENU
             flags = self.input_handler.catch_and_process_input(self.state)
 
             if flags.exit:
@@ -63,14 +71,17 @@ class Game:
                                   GameStates.DROP_INVENTORY,
                                   GameStates.CHARACTER_SCREEN,
                                   GameStates.INFO}:
-                    self.state = self.previous_state
+                    self.__change_state(self.previous_state)
+
                 else:
                     self.__change_state(GameStates.EXIT)
+                    logger.info('Game ended.')
 
             if self.state in {GameStates.PLAYER_TURN,
                               GameStates.SHOW_INVENTORY,
                               GameStates.DROP_INVENTORY,
-                              GameStates.LEVEL_UP}:
+                              GameStates.LEVEL_UP,
+                              GameStates.INFO}:
                 self.__player_turn(flags)
 
             if self.state == GameStates.ENEMY_TURN:
@@ -78,7 +89,8 @@ class Game:
 
             if self.state in {GameStates.LEVEL_UP,
                               GameStates.SHOW_INVENTORY,
-                              GameStates.DROP_INVENTORY}:
+                              GameStates.DROP_INVENTORY,
+                              GameStates.INFO}:
                 self.ui_holder.show(self.state, player=self.obj_holder.player)
 
     def __player_turn(self, flags):
@@ -92,6 +104,9 @@ class Game:
 
         if flags.show_character_screen:
             self.__change_state(GameStates.CHARACTER_SCREEN)
+
+        if flags.show_info_screen:
+            self.__change_state(GameStates.INFO)
 
         if flags.move:
             action_result = self.obj_holder.player_move(flags.move)

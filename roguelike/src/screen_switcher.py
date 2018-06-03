@@ -21,7 +21,7 @@ class ScreenSwitcher:
                            GameStates.DROP_INVENTORY}:
             self.__inventory_menu(player)
         if screen_type == GameStates.INFO:
-            self.__info_screen()
+            self.__info_screen(player)
         if screen_type == GameStates.CHARACTER_SCREEN:
             self.__character_screen(player)
 
@@ -83,8 +83,9 @@ class ScreenSwitcher:
                    'Agility (+1 defense, from {0})'.format(player.fighter.defense)]
         self.__menu('', options, UISettings.inventory_width)
 
-    def __info_screen(self):
-        self.__root_console.clear()
+    def __info_screen(self, flag=True):
+        if not flag:
+            self.__root_console.clear()
         with open(UISettings.info_file) as f:
             lines = f.readlines()
         width, height = 30, 25

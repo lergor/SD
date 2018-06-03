@@ -5,6 +5,9 @@ from src.utils import *
 from numpy.random import choice
 
 
+logger = get_logger(__name__)
+
+
 class GameMap(Map):
     """
     The class that represents a map of the game on the current level.
@@ -18,6 +21,7 @@ class GameMap(Map):
         self.dungeon_level = level
         self.explored = [[False for y in range(UISettings.map_height)]
                          for x in range(UISettings.map_width)]
+        logger.info('Map created: level {}.'.format(level))
         self.__make_map()
 
     def __make_map(self):
@@ -35,6 +39,7 @@ class GameMap(Map):
                 rooms.append(new_room)
         self.player.x, self.player.y = rooms[0].center()
         down_stairs = EntityFactory.make_stairs(rooms[-1])
+        logger.info('Rooms created: {}.'.format(len(rooms)))
         self.entities.append(down_stairs)
 
     def __mark_on_map(self, room):
@@ -76,8 +81,12 @@ class GameMap(Map):
             'Sword': self.__from_dungeon_level([[5, 4]], level),
             'Shield': self.__from_dungeon_level([[15, 8]], level)
         }
+        num = len(self.entities)
         self.__place(room, monsters_per_room, monster_chances, entities)
+        logger.info('Monsters created: {}.'.format(len(entities) - num))
+        num = len(self.entities)
         self.__place(room, items_per_room, item_chances, entities)
+        logger.info('Items created: {}.'.format(len(entities) - num))
 
     def __from_dungeon_level(self, table, level):
         for (value, level_value) in reversed(table):

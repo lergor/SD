@@ -2,6 +2,9 @@ import tdl
 from src.utils import *
 
 
+logger = get_logger(__name__)
+
+
 class Flags:
     """
     contains an interpretation of user input.
@@ -71,6 +74,8 @@ class InputHandler:
     def __catch_input(self):
         for event in tdl.event.get():
             if event.type == 'KEYDOWN':
+                if event.key != 'TEXT':
+                    logger.info('Pressed: {} {}.'.format(event.key, event.char))
                 return event
         return None
 

@@ -1,0 +1,456 @@
+input_handler   INFO   Pressed: CHAR a.
+map   INFO   Map created: level 1.
+map   INFO   Monsters created: 1.
+map   INFO   Items created: 1.
+map   INFO   Monsters created: 2.
+map   INFO   Items created: 0.
+map   INFO   Monsters created: 0.
+map   INFO   Items created: 1.
+map   INFO   Monsters created: 1.
+map   INFO   Items created: 1.
+map   INFO   Monsters created: 1.
+map   INFO   Items created: 1.
+map   INFO   Monsters created: 0.
+map   INFO   Items created: 0.
+map   INFO   Monsters created: 0.
+map   INFO   Items created: 0.
+map   INFO   Monsters created: 0.
+map   INFO   Items created: 1.
+map   INFO   Monsters created: 1.
+map   INFO   Items created: 0.
+map   INFO   Monsters created: 2.
+map   INFO   Items created: 1.
+map   INFO   Monsters created: 0.
+map   INFO   Items created: 1.
+map   INFO   Rooms created: 11.
+obj_holder   INFO   Created player: (16, 13)
+game   INFO   Game started.
+input_handler   INFO   Pressed: RIGHT .
+obj_holder   INFO   Player: (17, 13)
+input_handler   INFO   Pressed: RIGHT .
+obj_holder   INFO   Player: (18, 13)
+input_handler   INFO   Pressed: CHAR s.
+obj_holder   INFO   Player picks up Healing potion
+fighter   INFO   Spider attacks Player for 3 hit points.
+input_handler   INFO   Pressed: DOWN .
+obj_holder   INFO   Player: (18, 14)
+fighter   INFO   Spider attacks Player for 3 hit points.
+input_handler   INFO   Pressed: LEFT .
+fighter   INFO   Player attacks Spider for 4 hit points.
+obj_holder   INFO   Player: (18, 14)
+fighter   INFO   Spider attacks Player for 3 hit points.
+input_handler   INFO   Pressed: LEFT .
+fighter   INFO   Player attacks Spider for 4 hit points.
+obj_holder   INFO   Player: (18, 14)
+fighter   INFO   Spider attacks Player for 3 hit points.
+input_handler   INFO   Pressed: LEFT .
+fighter   INFO   Player attacks Spider for 4 hit points.
+obj_holder   INFO   Player: (18, 14)
+fighter   INFO   Spider attacks Player for 3 hit points.
+input_handler   INFO   Pressed: LEFT .
+fighter   INFO   Player attacks Spider for 4 hit points.
+obj_holder   INFO   Player: (18, 14)
+fighter   INFO   Spider attacks Player for 3 hit points.
+input_handler   INFO   Pressed: LEFT .
+fighter   INFO   Player attacks Spider for 4 hit points.
+obj_holder   INFO   Player: (18, 14)
+obj_holder   INFO   Spider is dead.
+input_handler   INFO   Pressed: DOWN .
+obj_holder   INFO   Player: (18, 15)
+input_handler   INFO   Pressed: DOWN .
+obj_holder   INFO   Player: (18, 16)
+input_handler   INFO   Pressed: DOWN .
+obj_holder   INFO   Player: (18, 17)
+input_handler   INFO   Pressed: RIGHT .
+obj_holder   INFO   Player: (19, 17)
+input_handler   INFO   Pressed: RIGHT .
+obj_holder   INFO   Player: (20, 17)
+input_handler   INFO   Pressed: RIGHT .
+obj_holder   INFO   Player: (21, 17)
+input_handler   INFO   Pressed: RIGHT .
+obj_holder   INFO   Player: (22, 17)
+input_handler   INFO   Pressed: RIGHT .
+obj_holder   INFO   Player: (23, 17)
+input_handler   INFO   Pressed: RIGHT .
+obj_holder   INFO   Player: (24, 17)
+input_handler   INFO   Pressed: DOWN .
+obj_holder   INFO   Player: (24, 18)
+input_handler   INFO   Pressed: RIGHT .
+obj_holder   INFO   Player: (25, 18)
+input_handler   INFO   Pressed: RIGHT .
+obj_holder   INFO   Player: (26, 18)
+input_handler   INFO   Pressed: CHAR s.
+obj_holder   INFO   Player picks up Healing potion
+input_handler   INFO   Pressed: RIGHT .
+obj_holder   INFO   Player: (27, 18)
+input_handler   INFO   Pressed: RIGHT .
+obj_holder   INFO   Player: (28, 18)
+input_handler   INFO   Pressed: UP .
+obj_holder   INFO   Player: (28, 17)
+input_handler   INFO   Pressed: RIGHT .
+obj_holder   INFO   Player: (29, 17)
+input_handler   INFO   Pressed: RIGHT .
+obj_holder   INFO   Player: (30, 17)
+input_handler   INFO   Pressed: RIGHT .
+obj_holder   INFO   Player: (31, 17)
+input_handler   INFO   Pressed: RIGHT .
+obj_holder   INFO   Player: (32, 17)
+input_handler   INFO   Pressed: RIGHT .
+obj_holder   INFO   Player: (33, 17)
+input_handler   INFO   Pressed: RIGHT .
+obj_holder   INFO   Player: (34, 17)
+input_handler   INFO   Pressed: RIGHT .
+obj_holder   INFO   Player: (35, 17)
+input_handler   INFO   Pressed: RIGHT .
+obj_holder   INFO   Player: (36, 17)
+input_handler   INFO   Pressed: RIGHT .
+obj_holder   INFO   Player: (37, 17)
+input_handler   INFO   Pressed: RIGHT .
+obj_holder   INFO   Player: (38, 17)
+input_handler   INFO   Pressed: RIGHT .
+obj_holder   INFO   Player: (39, 17)
+input_handler   INFO   Pressed: UP .
+obj_holder   INFO   Player: (39, 16)
+input_handler   INFO   Pressed: UP .
+obj_holder   INFO   Player: (39, 15)
+input_handler   INFO   Pressed: UP .
+obj_holder   INFO   Player: (39, 14)
+fighter   INFO   Spider attacks Player for 3 hit points.
+input_handler   INFO   Pressed: UP .
+obj_holder   INFO   Player: (39, 13)
+fighter   INFO   Spider attacks Player for 3 hit points.
+input_handler   INFO   Pressed: RIGHT .
+fighter   INFO   Player attacks Spider for 4 hit points.
+obj_holder   INFO   Player: (39, 13)
+fighter   INFO   Spider attacks Player for 3 hit points.
+input_handler   INFO   Pressed: RIGHT .
+fighter   INFO   Player attacks Spider for 4 hit points.
+obj_holder   INFO   Player: (39, 13)
+fighter   INFO   Spider attacks Player for 3 hit points.
+input_handler   INFO   Pressed: RIGHT .
+fighter   INFO   Player attacks Spider for 4 hit points.
+obj_holder   INFO   Player: (39, 13)
+fighter   INFO   Spider attacks Player for 3 hit points.
+input_handler   INFO   Pressed: RIGHT .
+fighter   INFO   Player attacks Spider for 4 hit points.
+obj_holder   INFO   Player: (39, 13)
+fighter   INFO   Spider attacks Player for 3 hit points.
+input_handler   INFO   Pressed: RIGHT .
+fighter   INFO   Player attacks Spider for 4 hit points.
+obj_holder   INFO   Player: (39, 13)
+obj_holder   INFO   Spider is dead.
+input_handler   INFO   Pressed: UP .
+obj_holder   INFO   Player: (39, 12)
+input_handler   INFO   Pressed: UP .
+obj_holder   INFO   Player: (39, 11)
+input_handler   INFO   Pressed: RIGHT .
+obj_holder   INFO   Player: (40, 11)
+input_handler   INFO   Pressed: RIGHT .
+obj_holder   INFO   Player: (41, 11)
+input_handler   INFO   Pressed: CHAR s.
+obj_holder   INFO   Player picks up Healing potion
+input_handler   INFO   Pressed: DOWN .
+obj_holder   INFO   Player: (41, 12)
+input_handler   INFO   Pressed: DOWN .
+obj_holder   INFO   Player: (41, 13)
+input_handler   INFO   Pressed: RIGHT .
+obj_holder   INFO   Player: (42, 13)
+input_handler   INFO   Pressed: RIGHT .
+obj_holder   INFO   Player: (43, 13)
+input_handler   INFO   Pressed: RIGHT .
+obj_holder   INFO   Player: (44, 13)
+input_handler   INFO   Pressed: RIGHT .
+obj_holder   INFO   Player: (45, 13)
+input_handler   INFO   Pressed: RIGHT .
+obj_holder   INFO   Player: (45, 13)
+input_handler   INFO   Pressed: DOWN .
+obj_holder   INFO   Player: (45, 14)
+input_handler   INFO   Pressed: DOWN .
+obj_holder   INFO   Player: (45, 15)
+input_handler   INFO   Pressed: DOWN .
+obj_holder   INFO   Player: (45, 16)
+input_handler   INFO   Pressed: DOWN .
+obj_holder   INFO   Player: (45, 17)
+input_handler   INFO   Pressed: DOWN .
+obj_holder   INFO   Player: (45, 18)
+input_handler   INFO   Pressed: DOWN .
+obj_holder   INFO   Player: (45, 19)
+input_handler   INFO   Pressed: DOWN .
+obj_holder   INFO   Player: (45, 20)
+input_handler   INFO   Pressed: DOWN .
+obj_holder   INFO   Player: (45, 21)
+input_handler   INFO   Pressed: DOWN .
+obj_holder   INFO   Player: (45, 22)
+input_handler   INFO   Pressed: DOWN .
+obj_holder   INFO   Player: (45, 23)
+input_handler   INFO   Pressed: DOWN .
+obj_holder   INFO   Player: (45, 24)
+input_handler   INFO   Pressed: DOWN .
+obj_holder   INFO   Player: (45, 25)
+input_handler   INFO   Pressed: DOWN .
+fighter   INFO   Player attacks Spider for 4 hit points.
+obj_holder   INFO   Player: (45, 25)
+fighter   INFO   Spider attacks Player for 3 hit points.
+input_handler   INFO   Pressed: DOWN .
+fighter   INFO   Player attacks Spider for 4 hit points.
+obj_holder   INFO   Player: (45, 25)
+fighter   INFO   Spider attacks Player for 3 hit points.
+input_handler   INFO   Pressed: DOWN .
+fighter   INFO   Player attacks Spider for 4 hit points.
+obj_holder   INFO   Player: (45, 25)
+fighter   INFO   Spider attacks Player for 3 hit points.
+input_handler   INFO   Pressed: DOWN .
+fighter   INFO   Player attacks Spider for 4 hit points.
+obj_holder   INFO   Player: (45, 25)
+fighter   INFO   Spider attacks Player for 3 hit points.
+input_handler   INFO   Pressed: DOWN .
+fighter   INFO   Player attacks Spider for 4 hit points.
+obj_holder   INFO   Player: (45, 25)
+obj_holder   INFO   Spider is dead.
+input_handler   INFO   Pressed: DOWN .
+obj_holder   INFO   Player: (45, 26)
+input_handler   INFO   Pressed: DOWN .
+obj_holder   INFO   Player: (45, 27)
+input_handler   INFO   Pressed: DOWN .
+obj_holder   INFO   Player: (45, 28)
+input_handler   INFO   Pressed: DOWN .
+obj_holder   INFO   Player: (45, 29)
+input_handler   INFO   Pressed: DOWN .
+obj_holder   INFO   Player: (45, 30)
+input_handler   INFO   Pressed: DOWN .
+obj_holder   INFO   Player: (45, 31)
+fighter   INFO   Spider attacks Player for 3 hit points.
+input_handler   INFO   Pressed: DOWN .
+obj_holder   INFO   Player: (45, 32)
+fighter   INFO   Spider attacks Player for 3 hit points.
+input_handler   INFO   Pressed: RIGHT .
+obj_holder   INFO   Player: (46, 32)
+fighter   INFO   Spider attacks Player for 3 hit points.
+input_handler   INFO   Pressed: UP .
+fighter   INFO   Player attacks Spider for 4 hit points.
+obj_holder   INFO   Player: (46, 32)
+fighter   INFO   Spider attacks Player for 3 hit points.
+input_handler   INFO   Pressed: UP .
+fighter   INFO   Player attacks Spider for 4 hit points.
+obj_holder   INFO   Player: (46, 32)
+fighter   INFO   Spider attacks Player for 3 hit points.
+input_handler   INFO   Pressed: UP .
+fighter   INFO   Player attacks Spider for 4 hit points.
+obj_holder   INFO   Player: (46, 32)
+fighter   INFO   Spider attacks Player for 3 hit points.
+input_handler   INFO   Pressed: UP .
+fighter   INFO   Player attacks Spider for 4 hit points.
+obj_holder   INFO   Player: (46, 32)
+fighter   INFO   Spider attacks Player for 3 hit points.
+input_handler   INFO   Pressed: UP .
+fighter   INFO   Player attacks Spider for 4 hit points.
+obj_holder   INFO   Player: (46, 32)
+obj_holder   INFO   Spider is dead.
+input_handler   INFO   Pressed: UP .
+obj_holder   INFO   Player: (46, 31)
+input_handler   INFO   Pressed: UP .
+obj_holder   INFO   Player: (46, 30)
+input_handler   INFO   Pressed: UP .
+obj_holder   INFO   Player: (46, 29)
+input_handler   INFO   Pressed: UP .
+obj_holder   INFO   Player: (46, 28)
+input_handler   INFO   Pressed: CHAR a.
+game   INFO   GameStates.PLAYER_TURN
+input_handler   INFO   Pressed: CHAR b.
+input_handler   INFO   Pressed: DOWN .
+obj_holder   INFO   Player: (46, 29)
+input_handler   INFO   Pressed: UP .
+obj_holder   INFO   Player: (46, 28)
+input_handler   INFO   Pressed: RIGHT .
+obj_holder   INFO   Player: (47, 28)
+input_handler   INFO   Pressed: RIGHT .
+obj_holder   INFO   Player: (48, 28)
+input_handler   INFO   Pressed: RIGHT .
+obj_holder   INFO   Player: (49, 28)
+input_handler   INFO   Pressed: RIGHT .
+obj_holder   INFO   Player: (50, 28)
+input_handler   INFO   Pressed: RIGHT .
+obj_holder   INFO   Player: (51, 28)
+input_handler   INFO   Pressed: RIGHT .
+obj_holder   INFO   Player: (52, 28)
+input_handler   INFO   Pressed: RIGHT .
+obj_holder   INFO   Player: (53, 28)
+input_handler   INFO   Pressed: RIGHT .
+obj_holder   INFO   Player: (54, 28)
+input_handler   INFO   Pressed: RIGHT .
+obj_holder   INFO   Player: (55, 28)
+input_handler   INFO   Pressed: RIGHT .
+obj_holder   INFO   Player: (56, 28)
+input_handler   INFO   Pressed: RIGHT .
+obj_holder   INFO   Player: (57, 28)
+input_handler   INFO   Pressed: RIGHT .
+obj_holder   INFO   Player: (58, 28)
+input_handler   INFO   Pressed: RIGHT .
+obj_holder   INFO   Player: (59, 28)
+input_handler   INFO   Pressed: RIGHT .
+obj_holder   INFO   Player: (60, 28)
+input_handler   INFO   Pressed: RIGHT .
+obj_holder   INFO   Player: (61, 28)
+input_handler   INFO   Pressed: RIGHT .
+obj_holder   INFO   Player: (62, 28)
+input_handler   INFO   Pressed: RIGHT .
+obj_holder   INFO   Player: (62, 28)
+input_handler   INFO   Pressed: RIGHT .
+obj_holder   INFO   Player: (62, 28)
+input_handler   INFO   Pressed: UP .
+obj_holder   INFO   Player: (62, 27)
+input_handler   INFO   Pressed: LEFT .
+obj_holder   INFO   Player: (61, 27)
+input_handler   INFO   Pressed: CHAR s.
+obj_holder   INFO   Player picks up Healing potion
+input_handler   INFO   Pressed: UP .
+obj_holder   INFO   Player: (61, 26)
+input_handler   INFO   Pressed: UP .
+obj_holder   INFO   Player: (61, 25)
+input_handler   INFO   Pressed: LEFT .
+obj_holder   INFO   Player: (60, 25)
+input_handler   INFO   Pressed: LEFT .
+obj_holder   INFO   Player: (59, 25)
+input_handler   INFO   Pressed: LEFT .
+obj_holder   INFO   Player: (58, 25)
+input_handler   INFO   Pressed: CHAR g.
+input_handler   INFO   Pressed: CHAR d.
+obj_holder   INFO   Player goes downstairs: (58, 25)
+map   INFO   Map created: level 2.
+map   INFO   Monsters created: 1.
+map   INFO   Items created: 0.
+map   INFO   Monsters created: 2.
+map   INFO   Items created: 0.
+map   INFO   Monsters created: 0.
+map   INFO   Items created: 0.
+map   INFO   Monsters created: 2.
+map   INFO   Items created: 0.
+map   INFO   Monsters created: 0.
+map   INFO   Items created: 0.
+map   INFO   Monsters created: 2.
+map   INFO   Items created: 0.
+map   INFO   Monsters created: 2.
+map   INFO   Items created: 0.
+map   INFO   Monsters created: 0.
+map   INFO   Items created: 0.
+map   INFO   Monsters created: 0.
+map   INFO   Items created: 1.
+map   INFO   Monsters created: 0.
+map   INFO   Items created: 1.
+map   INFO   Monsters created: 1.
+map   INFO   Items created: 1.
+map   INFO   Rooms created: 11.
+input_handler   INFO   Pressed: DOWN .
+obj_holder   INFO   Player: (8, 15)
+input_handler   INFO   Pressed: RIGHT .
+obj_holder   INFO   Player: (9, 15)
+input_handler   INFO   Pressed: UP .
+fighter   INFO   Player attacks Spider for 4 hit points.
+obj_holder   INFO   Player: (9, 15)
+fighter   INFO   Spider attacks Player for 3 hit points.
+input_handler   INFO   Pressed: UP .
+fighter   INFO   Player attacks Spider for 4 hit points.
+obj_holder   INFO   Player: (9, 15)
+fighter   INFO   Spider attacks Player for 3 hit points.
+input_handler   INFO   Pressed: UP .
+fighter   INFO   Player attacks Spider for 4 hit points.
+obj_holder   INFO   Player: (9, 15)
+fighter   INFO   Spider attacks Player for 3 hit points.
+input_handler   INFO   Pressed: UP .
+fighter   INFO   Player attacks Spider for 4 hit points.
+obj_holder   INFO   Player: (9, 15)
+fighter   INFO   Spider attacks Player for 3 hit points.
+input_handler   INFO   Pressed: UP .
+fighter   INFO   Player attacks Spider for 4 hit points.
+obj_holder   INFO   Player: (9, 15)
+obj_holder   INFO   Spider is dead.
+input_handler   INFO   Pressed: UP .
+obj_holder   INFO   Player: (9, 14)
+input_handler   INFO   Pressed: DOWN .
+obj_holder   INFO   Player: (9, 15)
+input_handler   INFO   Pressed: DOWN .
+obj_holder   INFO   Player: (9, 16)
+input_handler   INFO   Pressed: RIGHT .
+obj_holder   INFO   Player: (10, 16)
+input_handler   INFO   Pressed: DOWN .
+obj_holder   INFO   Player: (10, 17)
+input_handler   INFO   Pressed: RIGHT .
+obj_holder   INFO   Player: (11, 17)
+input_handler   INFO   Pressed: RIGHT .
+obj_holder   INFO   Player: (12, 17)
+input_handler   INFO   Pressed: RIGHT .
+obj_holder   INFO   Player: (13, 17)
+input_handler   INFO   Pressed: RIGHT .
+obj_holder   INFO   Player: (14, 17)
+input_handler   INFO   Pressed: RIGHT .
+obj_holder   INFO   Player: (15, 17)
+input_handler   INFO   Pressed: RIGHT .
+obj_holder   INFO   Player: (16, 17)
+input_handler   INFO   Pressed: RIGHT .
+obj_holder   INFO   Player: (17, 17)
+input_handler   INFO   Pressed: RIGHT .
+obj_holder   INFO   Player: (18, 17)
+input_handler   INFO   Pressed: RIGHT .
+obj_holder   INFO   Player: (19, 17)
+input_handler   INFO   Pressed: RIGHT .
+obj_holder   INFO   Player: (20, 17)
+input_handler   INFO   Pressed: RIGHT .
+obj_holder   INFO   Player: (21, 17)
+input_handler   INFO   Pressed: RIGHT .
+obj_holder   INFO   Player: (22, 17)
+input_handler   INFO   Pressed: RIGHT .
+obj_holder   INFO   Player: (23, 17)
+input_handler   INFO   Pressed: UP .
+obj_holder   INFO   Player: (23, 16)
+input_handler   INFO   Pressed: DOWN .
+obj_holder   INFO   Player: (23, 17)
+fighter   INFO   Spider attacks Player for 3 hit points.
+fighter   INFO   Spider attacks Player for 3 hit points.
+input_handler   INFO   Pressed: DOWN .
+obj_holder   INFO   Player: (23, 18)
+fighter   INFO   Spider attacks Player for 3 hit points.
+fighter   INFO   Spider attacks Player for 3 hit points.
+input_handler   INFO   Pressed: UP .
+obj_holder   INFO   Player: (23, 17)
+fighter   INFO   Spider attacks Player for 3 hit points.
+fighter   INFO   Spider attacks Player for 3 hit points.
+input_handler   INFO   Pressed: UP .
+obj_holder   INFO   Player: (23, 16)
+fighter   INFO   Spider attacks Player for 3 hit points.
+fighter   INFO   Spider attacks Player for 3 hit points.
+input_handler   INFO   Pressed: DOWN .
+obj_holder   INFO   Player: (23, 17)
+fighter   INFO   Spider attacks Player for 3 hit points.
+fighter   INFO   Spider attacks Player for 3 hit points.
+input_handler   INFO   Pressed: DOWN .
+obj_holder   INFO   Player: (23, 18)
+fighter   INFO   Spider attacks Player for 3 hit points.
+fighter   INFO   Spider attacks Player for 3 hit points.
+input_handler   INFO   Pressed: UP .
+obj_holder   INFO   Player: (23, 17)
+fighter   INFO   Spider attacks Player for 3 hit points.
+fighter   INFO   Spider attacks Player for 3 hit points.
+input_handler   INFO   Pressed: UP .
+obj_holder   INFO   Player: (23, 16)
+fighter   INFO   Spider attacks Player for 3 hit points.
+fighter   INFO   Spider attacks Player for 3 hit points.
+input_handler   INFO   Pressed: DOWN .
+obj_holder   INFO   Player: (23, 17)
+fighter   INFO   Spider attacks Player for 3 hit points.
+fighter   INFO   Spider attacks Player for 3 hit points.
+input_handler   INFO   Pressed: DOWN .
+obj_holder   INFO   Player: (23, 18)
+fighter   INFO   Spider attacks Player for 3 hit points.
+fighter   INFO   Spider attacks Player for 3 hit points.
+obj_holder   INFO   Player is dead.
+input_handler   INFO   Pressed: UP .
+input_handler   INFO   Pressed: CHAR c.
+input_handler   INFO   Pressed: CHAR d.
+input_handler   INFO   Pressed: CHAR c.
+input_handler   INFO   Pressed: DOWN .
+input_handler   INFO   Pressed: CHAR c.
+input_handler   INFO   Pressed: CHAR c.
+input_handler   INFO   Pressed: CHAR q.
+input_handler   INFO   Pressed: ESCAPE .
+game   INFO   Game ended.
+input_handler   INFO   Pressed: ESCAPE .
