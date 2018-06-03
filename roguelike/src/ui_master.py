@@ -4,7 +4,7 @@ from src.utils import UISettings
 import logging
 
 
-class UIHolder:
+class UIMaster:
     """
     The class that draws all entities and manage actions with the graphics.
     """

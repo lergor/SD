@@ -38,7 +38,8 @@ class GameMap(Map):
                 self.place_entities(new_room, self.dungeon_level, self.entities)
                 rooms.append(new_room)
         self.player.x, self.player.y = rooms[0].center()
-        down_stairs = EntityFactory.make_stairs(rooms[-1])
+        x, y = rooms[-1].center()
+        down_stairs = EntityFactory.create_entity('Stairs', x, y)
         logger.info('Rooms created: {}.'.format(len(rooms)))
         self.entities.append(down_stairs)
 
@@ -102,7 +103,7 @@ class GameMap(Map):
 
             if not any([entity for entity in entities if entity.x == x and entity.y == y]):
                 monster_choice = self.__choice_from_dict(chances)
-                monster = EntityFactory.make_entity(monster_choice, x, y)
+                monster = EntityFactory.create_entity(monster_choice, x, y)
                 entities.append(monster)
 
     def __choice_from_dict(elf, choice_dict):

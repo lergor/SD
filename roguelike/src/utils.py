@@ -5,17 +5,19 @@ from tcod import image_load
 from enum import Enum
 import logging
 
+
 class RenderOrder(Enum):
     STAIRS = 1
     CORPSE = 2
     ITEM = 3
     ACTOR = 4
+    PLAYER = 4
 
 
 class UISettings:
-    game_font = 'src/font_and_pic/arial12x12.png'
-    background_image = image_load('src/font_and_pic/background.png')
-    info_file = 'src/font_and_pic/info'
+    game_font = 'src/graphics/arial12x12.png'
+    background_image = image_load('src/graphics/background.png')
+    info_file = 'src/graphics/info'
     window_title = 'Roguelike'
     author = 'By lergor'
     screen_width = 90

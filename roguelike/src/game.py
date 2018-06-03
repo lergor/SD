@@ -1,8 +1,8 @@
 from src.input_handler import *
-from src.obj_holder import *
+from src.obj_keeper import *
 from src.utils import *
 from src.messages import *
-from src.ui_holder import *
+from src.ui_master import *
 
 
 logger = get_logger(__name__)
@@ -11,7 +11,7 @@ logger = get_logger(__name__)
 class Game:
     """
     The main class of whole game.
-    Holds InputHandler, ObjectsHolder, UIHolder, MessageLog instances.
+    Holds InputHandler, ObjectsKeeper, UIMaster, MessageLog instances.
     Provides the correct process of the game. Has method run with an infinite loop.
     Processes the user input and manages all actions in the game.
     To start the game create the instance of the Game class and call the method 'run':
@@ -23,8 +23,8 @@ class Game:
     def __init__(self):
         self.input_handler = InputHandler()
         self.state = GameStates.MENU
-        self.obj_holder = ObjectsHolder()
-        self.ui_holder = UIHolder(self)
+        self.obj_holder = ObjectsKeeper()
+        self.ui_holder = UIMaster(self)
         self.message_log = MessageLog()
 
     def run(self):

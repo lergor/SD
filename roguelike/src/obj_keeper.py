@@ -7,14 +7,14 @@ from src.messages import Message
 logger = get_logger(__name__)
 
 
-class ObjectsHolder:
+class ObjectsKeeper:
     """
     Manages all objects of the game such as map and entities.
     Performs actions of the objects mostly for the player.
     """
 
     def init_objects(self):
-        self.player = EntityFactory.create_player()
+        self.player = EntityFactory.create_entity('Player')
         self.entities = [self.player]
         self.map = GameMap(self.entities)
         logger.info('Created player: ({}, {})'.format(self.player.x, self.player.y))
