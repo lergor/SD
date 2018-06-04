@@ -7910,3 +7910,42 @@ input_handler   INFO   Pressed: TEXT
 input_handler   INFO   Pressed: ESCAPE 
 game   INFO   Game ended.
 input_handler   INFO   Pressed: ESCAPE 
+input_handler   INFO   Pressed: CHAR a
+map   INFO   Map created: level 1.
+map   INFO   Monsters created: 0.
+map   INFO   Items created: 1.
+map   INFO   Monsters created: 0.
+map   INFO   Items created: 1.
+map   INFO   Monsters created: 2.
+map   INFO   Items created: 0.
+map   INFO   Monsters created: 0.
+map   INFO   Items created: 1.
+map   INFO   Monsters created: 1.
+map   INFO   Items created: 1.
+map   INFO   Monsters created: 0.
+map   INFO   Items created: 1.
+map   INFO   Monsters created: 1.
+map   INFO   Items created: 1.
+map   INFO   Monsters created: 2.
+map   INFO   Items created: 1.
+map   INFO   Monsters created: 2.
+map   INFO   Items created: 0.
+map   INFO   Monsters created: 0.
+map   INFO   Items created: 0.
+map   INFO   Monsters created: 0.
+map   INFO   Items created: 0.
+map   INFO   Monsters created: 2.
+map   INFO   Items created: 1.
+map   INFO   Monsters created: 2.
+map   INFO   Items created: 1.
+map   INFO   Monsters created: 0.
+map   INFO   Items created: 0.
+map   INFO   Monsters created: 2.
+map   INFO   Items created: 1.
+map   INFO   Rooms created: 15.
+obj_keeper   INFO   Created player: (64, 34)
+game   INFO   Game started.
+input_handler   INFO   Pressed: TEXT 
+input_handler   INFO   Pressed: ESCAPE 
+game   INFO   Game ended.
+input_handler   INFO   Pressed: ESCAPE 

@@ -4,7 +4,7 @@ from src.utils import GameStates, ACTIVE_CHARS, ACTIVE_KEYS
 
 
 class TestInputHandler(unittest.TestCase):
-    
+
     class KeyEvent:
         def __init__(self, char=None, key=None):
             self.char = char

@@ -23,8 +23,7 @@ There are some types of players who may be interested:
  The Game takes the user input as Flags from the InputHandler, processes it
  with appropriate methods in the ObjectsKeeper and UIMaster and changes its GameState if it is needed.
     - **GameStates** is a set of all possible states of the game such as: <br/>
-    MENU, INFO, PLAYER_TURN,
-ENEMY_TURN, LEVEL_UP, CHARACTER_SCREEN, SHOW_INVENTORY, DROP_INVENTORY, PLAYER_DEAD, EXIT.
+    MENU, INFO, PLAYER_TURN, ENEMY_TURN, LEVEL_UP, CHARACTER_SCREEN, SHOW_INVENTORY, DROP_INVENTORY, PLAYER_DEAD, EXIT.
 
 - **InputHandler** takes each user input which is a key that was pressed and converts
 it into a Flags class depending on the current state of the game.
@@ -61,3 +60,33 @@ It contains all accessories of the entity and methods for interactions
     It hunts the player and injuries it.
 - A **UISettings** is a class with all values for a graphics such as
 a font, a background picture, RGB colors, etc.
+
+## Components diagram
+The Roguelike contains four components: InputHandler, Game, ObjectsKeeper and UIMaster. <br/>
+The *InputHandler* component listens to the user input. If something is catched
+it will be converted to Flags and passed to the Game.<br/>
+The *Game* component performs the logic of the Roguelike game. When it take some Flags
+it call appropriate ObjectsKeeper's methods accordingly to the current state.<br/>
+The *ObjectsKeeper* component manages all objects of the game.<br/>
+The *UIMaster* draws every object of the game by interacting with the computer screen.<br/>
+
+ ![Components diagram](./src/components_diagram2.png)
+
+## Automata diagram for states of the game
+
+There are ten states of the game. The following automata diagram shows the state depending on the user input
+during the game.<br/>
+
+ [Automata diagram](./src/automata_diagram2.png)
+
+## Sequence diagram for one player move
+
+This sequence diagram shows one move that the player do when key 'RIGHT' is pressed.<br/>
+
+ ![Sequence diagram](./src/sequence_diagram2.png)
+
+## Class diagram
+
+Finally, the class diagram for this project.<br/>
+
+ [Class diagram](./src/class_diagram.png)

@@ -49,7 +49,7 @@ class ObjectsKeeper:
                 self.entities.remove(item)
         return [pickup_results]
 
-    def player_climb_up(self):
+    def player_go_downstairs(self):
         recompute = False
         text = 'There are no stairs here.'
         color = UISettings.yellow
