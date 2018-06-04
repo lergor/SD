@@ -111,8 +111,8 @@ ACTIVE_CHARS = {
     'c': {'show_character_screen': True},
     'd': {'take_stairs' : True},
     'aa': {'new_game': True},
-    'bb': {'info': True},
-    'q': {'info': True},
+    'bb': {'show_info_screen': True},
+    'q': {'show_info_screen': True},
     'cc': {'exit': True}
 }
 

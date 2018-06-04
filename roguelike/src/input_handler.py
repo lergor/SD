@@ -33,7 +33,7 @@ class Flags:
     def update(self, input_dict):
         self.__clear()
         self.new_game = input_dict.get('new_game')
-        self.show_info_screen = input_dict.get('info')
+        self.show_info_screen = input_dict.get('show_info_screen')
         self.exit = input_dict.get('exit')
         self.move = input_dict.get('move')
         self.wait = input_dict.get('wait')
@@ -70,16 +70,18 @@ class InputHandler:
             GameStates.MENU: self.__handle_main_menu
         }
 
-    def __catch_input(self):
-        for event in tdl.event.get():
+    def __catch_input(self, source):
+        if not source:
+            source = tdl.event.get()
+        for event in source:
             if event.type == 'KEYDOWN':
                 return event
         return None
 
-    def catch_and_process_input(self, state):
+    def catch_and_process_input(self, state, source=None):
         action = dict()
         self.__game_state = state
-        self.__user_input = self.__catch_input()
+        self.__user_input = self.__catch_input(source)
         if self.__user_input:
             logger.info('Pressed: {} {}'.format(self.__user_input.key, self.__user_input.char))
             if self.__user_input.key == 'ESCAPE':

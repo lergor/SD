@@ -35,7 +35,7 @@ class GameMap(Map):
                 self.__mark_on_map(new_room)
                 if len(rooms) > 0:
                     self.__connect_rooms(rooms[-1], new_room)
-                self.__place_entities(new_room, self.dungeon_level, self.entities)
+                self.__place_entities(new_room)
                 rooms.append(new_room)
         self.player.x, self.player.y = rooms[0].center()
         x, y = rooms[-1].center()
@@ -144,11 +144,9 @@ class Room:
         self.y1 = randint(0, UISettings.map_height - h - 1)
         self.x2 = self.x1 + w
         self.y2 = self.y1 + h
-        self.center_x = int((self.x1 + self.x2) / 2)
-        self.center_y = int((self.y1 + self.y2) / 2)
 
     def center(self):
-        return self.center_x, self.center_y
+        return int((self.x1 + self.x2) / 2), int((self.y1 + self.y2) / 2)
 
     def intersect(self, other):
         return (self.x1 <= other.x2 and self.x2 >= other.x1 and

@@ -55,7 +55,7 @@ class Fighter:
         results = []
         damage = self.power - target.fighter.defense
         text = '{0} attacks {1} but does no damage.'.format(
-                self.owner.name.capitalize(), target.name)
+            self.owner.name.capitalize(), target.name)
         if damage > 0:
             text = '{0} attacks {1} for {2} hit points.'.format(
                 self.owner.name.capitalize(), target.name, str(damage))

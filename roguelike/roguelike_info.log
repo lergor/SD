@@ -7753,3 +7753,160 @@ map   INFO   Rooms created: 14.
 input_handler   INFO   Pressed: ESCAPE 
 game   INFO   Game ended.
 input_handler   INFO   Pressed: ESCAPE 
+input_handler   INFO   Pressed: 1 1
+input_handler   INFO   Pressed: TEXT 
+input_handler   INFO   Pressed: ESCAPE 
+input_handler   INFO   Pressed: CHAR a
+map   INFO   Map created: level 1.
+map   INFO   Monsters created: 2.
+map   INFO   Items created: 0.
+map   INFO   Monsters created: 2.
+map   INFO   Items created: 0.
+map   INFO   Monsters created: 0.
+map   INFO   Items created: 0.
+map   INFO   Monsters created: 1.
+map   INFO   Items created: 1.
+map   INFO   Monsters created: 0.
+map   INFO   Items created: 0.
+map   INFO   Monsters created: 1.
+map   INFO   Items created: 1.
+map   INFO   Monsters created: 2.
+map   INFO   Items created: 1.
+map   INFO   Monsters created: 2.
+map   INFO   Items created: 0.
+map   INFO   Monsters created: 1.
+map   INFO   Items created: 0.
+map   INFO   Monsters created: 0.
+map   INFO   Items created: 0.
+map   INFO   Monsters created: 0.
+map   INFO   Items created: 0.
+map   INFO   Rooms created: 11.
+obj_keeper   INFO   Created player: (62, 12)
+game   INFO   Game started.
+input_handler   INFO   Pressed: TEXT 
+input_handler   INFO   Pressed: DOWN 
+obj_keeper   INFO   Player: (62, 13)
+input_handler   INFO   Pressed: DOWN 
+obj_keeper   INFO   Player: (62, 14)
+input_handler   INFO   Pressed: DOWN 
+obj_keeper   INFO   Player: (62, 15)
+input_handler   INFO   Pressed: DOWN 
+obj_keeper   INFO   Player: (62, 16)
+input_handler   INFO   Pressed: DOWN 
+obj_keeper   INFO   Player: (62, 17)
+input_handler   INFO   Pressed: DOWN 
+obj_keeper   INFO   Player: (62, 18)
+input_handler   INFO   Pressed: DOWN 
+obj_keeper   INFO   Player: (62, 19)
+input_handler   INFO   Pressed: DOWN 
+obj_keeper   INFO   Player: (62, 20)
+input_handler   INFO   Pressed: UP 
+fighter   INFO   Player attacks Spider for 4 hit points.
+obj_keeper   INFO   Player: (62, 20)
+fighter   INFO   Spider attacks Player for 3 hit points.
+input_handler   INFO   Pressed: UP 
+fighter   INFO   Player attacks Spider for 4 hit points.
+obj_keeper   INFO   Player: (62, 20)
+fighter   INFO   Spider attacks Player for 3 hit points.
+input_handler   INFO   Pressed: UP 
+fighter   INFO   Player attacks Spider for 4 hit points.
+obj_keeper   INFO   Player: (62, 20)
+fighter   INFO   Spider attacks Player for 3 hit points.
+input_handler   INFO   Pressed: UP 
+fighter   INFO   Player attacks Spider for 4 hit points.
+obj_keeper   INFO   Player: (62, 20)
+fighter   INFO   Spider attacks Player for 3 hit points.
+input_handler   INFO   Pressed: UP 
+fighter   INFO   Player attacks Spider for 4 hit points.
+obj_keeper   INFO   Player: (62, 20)
+obj_keeper   INFO   Spider is dead.
+input_handler   INFO   Pressed: UP 
+fighter   INFO   Player attacks Spider for 4 hit points.
+obj_keeper   INFO   Player: (62, 20)
+fighter   INFO   Spider attacks Player for 3 hit points.
+input_handler   INFO   Pressed: UP 
+fighter   INFO   Player attacks Spider for 4 hit points.
+obj_keeper   INFO   Player: (62, 20)
+fighter   INFO   Spider attacks Player for 3 hit points.
+input_handler   INFO   Pressed: UP 
+fighter   INFO   Player attacks Spider for 4 hit points.
+obj_keeper   INFO   Player: (62, 20)
+fighter   INFO   Spider attacks Player for 3 hit points.
+input_handler   INFO   Pressed: UP 
+fighter   INFO   Player attacks Spider for 4 hit points.
+obj_keeper   INFO   Player: (62, 20)
+fighter   INFO   Spider attacks Player for 3 hit points.
+input_handler   INFO   Pressed: UP 
+fighter   INFO   Player attacks Spider for 4 hit points.
+obj_keeper   INFO   Player: (62, 20)
+obj_keeper   INFO   Spider is dead.
+input_handler   INFO   Pressed: UP 
+obj_keeper   INFO   Player: (62, 19)
+input_handler   INFO   Pressed: UP 
+obj_keeper   INFO   Player: (62, 18)
+input_handler   INFO   Pressed: UP 
+obj_keeper   INFO   Player: (62, 17)
+input_handler   INFO   Pressed: UP 
+obj_keeper   INFO   Player: (62, 16)
+input_handler   INFO   Pressed: UP 
+obj_keeper   INFO   Player: (62, 15)
+input_handler   INFO   Pressed: UP 
+obj_keeper   INFO   Player: (62, 14)
+input_handler   INFO   Pressed: UP 
+obj_keeper   INFO   Player: (62, 13)
+input_handler   INFO   Pressed: UP 
+obj_keeper   INFO   Player: (62, 12)
+input_handler   INFO   Pressed: DOWN 
+obj_keeper   INFO   Player: (62, 13)
+input_handler   INFO   Pressed: DOWN 
+obj_keeper   INFO   Player: (62, 14)
+input_handler   INFO   Pressed: DOWN 
+obj_keeper   INFO   Player: (62, 15)
+input_handler   INFO   Pressed: DOWN 
+obj_keeper   INFO   Player: (62, 16)
+input_handler   INFO   Pressed: DOWN 
+obj_keeper   INFO   Player: (62, 17)
+input_handler   INFO   Pressed: DOWN 
+obj_keeper   INFO   Player: (62, 18)
+input_handler   INFO   Pressed: DOWN 
+obj_keeper   INFO   Player: (62, 19)
+input_handler   INFO   Pressed: ESCAPE 
+game   INFO   Game ended.
+input_handler   INFO   Pressed: ESCAPE 
+input_handler   INFO   Pressed: CHAR a
+map   INFO   Map created: level 1.
+map   INFO   Monsters created: 0.
+map   INFO   Items created: 1.
+map   INFO   Monsters created: 1.
+map   INFO   Items created: 0.
+map   INFO   Monsters created: 1.
+map   INFO   Items created: 1.
+map   INFO   Monsters created: 0.
+map   INFO   Items created: 0.
+map   INFO   Monsters created: 0.
+map   INFO   Items created: 1.
+map   INFO   Monsters created: 2.
+map   INFO   Items created: 1.
+map   INFO   Monsters created: 2.
+map   INFO   Items created: 0.
+map   INFO   Monsters created: 1.
+map   INFO   Items created: 1.
+map   INFO   Monsters created: 0.
+map   INFO   Items created: 1.
+map   INFO   Monsters created: 1.
+map   INFO   Items created: 0.
+map   INFO   Monsters created: 1.
+map   INFO   Items created: 0.
+map   INFO   Monsters created: 1.
+map   INFO   Items created: 0.
+map   INFO   Monsters created: 1.
+map   INFO   Items created: 1.
+map   INFO   Monsters created: 1.
+map   INFO   Items created: 0.
+map   INFO   Rooms created: 14.
+obj_keeper   INFO   Created player: (54, 5)
+game   INFO   Game started.
+input_handler   INFO   Pressed: TEXT 
+input_handler   INFO   Pressed: ESCAPE 
+game   INFO   Game ended.
+input_handler   INFO   Pressed: ESCAPE 
