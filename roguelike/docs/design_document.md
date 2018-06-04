@@ -77,7 +77,7 @@ The *UIMaster* draws every object of the game by interacting with the computer s
 There are ten states of the game. The following automata diagram shows the state depending on the user input
 during the game.<br/>
 
- [Automata diagram](./src/automata_diagram2.png)
+ ![Automata diagram](./src/automata_diagram2.png)
 
 ## Sequence diagram for one player move
 
