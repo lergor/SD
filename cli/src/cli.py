@@ -64,9 +64,9 @@ class Cli:
                         print('Process exited with error code {}'.
                               format(return_value))
             except ParserException as ex:
-                print('Parsing exception:\n{}'.format(str(ex)))
+                print('Parsing exception:{}{}'.format(os.linesep, str(ex)))
             except LexerException as ex:
-                print('Lexing exception:\n{}'.format(str(ex)))
+                print('Lexing exception:{}{}'.format(os.linesep, str(ex)))
             except ExitException:
                 running = False
             except EOFError:
