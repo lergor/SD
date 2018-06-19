@@ -1,6 +1,6 @@
 from tdl.map import Map
 from random import randint
-from src.entity import EntityFactory
+from src.game_objects.entity import EntityFactory
 from src.utils import *
 from numpy.random import choice
 

@@ -1,7 +1,6 @@
 import tdl
-from src.screen_switcher import ScreenSwitcher
+from src.ui.screen_switcher import ScreenSwitcher
 from src.utils import UISettings
-import logging
 
 
 class UIMaster:

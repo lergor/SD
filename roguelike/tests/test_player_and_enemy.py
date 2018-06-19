@@ -1,7 +1,7 @@
 import unittest
 from src.input_handler import InputHandler
-from src.entity import EntityFactory
-from src.obj_keeper import ObjectsKeeper
+from src.game_objects.entity import EntityFactory
+from src.game_objects.obj_keeper import ObjectsKeeper
 from src.utils import GameStates
 
 

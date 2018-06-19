@@ -1,6 +1,6 @@
-from src.entity import EntityFactory
-from src.map import GameMap
-from src.screen_switcher import *
+from src.game_objects.entity import EntityFactory
+from src.game_objects.map import GameMap
+from src.ui.screen_switcher import *
 from src.messages import Message
 
 

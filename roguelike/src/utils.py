@@ -15,9 +15,9 @@ class RenderOrder(Enum):
 
 
 class UISettings:
-    game_font = 'src/graphics/arial12x12.png'
-    background_image = image_load('src/graphics/background.png')
-    info_file = 'src/graphics/info'
+    game_font = 'src/ui/graphics/arial12x12.png'
+    background_image = image_load('src/ui/graphics/background.png')
+    info_file = 'src/ui/graphics/info'
     window_title = 'Roguelike'
     author = 'By lergor'
     screen_width = 90

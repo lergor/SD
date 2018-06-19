@@ -1,8 +1,8 @@
-from src.input_handler import *
-from src.obj_keeper import *
+from src.input_handler.input_handler import *
+from src.game_objects.obj_keeper import *
 from src.utils import *
 from src.messages import *
-from src.ui_master import *
+from src.ui.ui_master import *
 
 
 logger = get_logger(__name__)
