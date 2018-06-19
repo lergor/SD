@@ -24,6 +24,7 @@ class CommandResult:
     the result of command.
     Contains the input, the environment and the return flag.
     """
+
     def __init__(self, output, env, return_value=0):
         """
         :param output: the Stream instance with command result.
@@ -54,6 +55,7 @@ class Command(metaclass=ABCMeta):
     The common class for all commands.
     Contains method 'run' that starts executions.
     """
+
     @abstractmethod
     def run(self, input, env):
         return NotImplemented
@@ -64,6 +66,7 @@ class CommandPIPE(Command):
     The abstract of PIPE that takes left command's output
     and redirect it to the right command as input stream.
     """
+
     def __init__(self, left, right):
         """
         Takes left and right commands.
@@ -130,7 +133,7 @@ class CommandCAT(Command):
                 file_path = os.path.join(env.get_cwd(), file)
                 if not os.path.isfile(file_path):
                     self.__output.write_line('cat: {}: No such file or directory.'.
-                                        format(file))
+                                             format(file))
                     return_value = 1
                     break
                 with open(file, 'r') as opened_file:
@@ -166,7 +169,7 @@ class CommandPWD(Command):
         return_value = 0
         if self.__args:
             self.__output.write_line('Wrong number of arguments for pwd command:'
-                                ' expected 0, got {}.'.format(len(self.__args)))
+                                     ' expected 0, got {}.'.format(len(self.__args)))
             return_value = 1
             return CommandResult(self.__output, env, return_value)
 
@@ -264,7 +267,7 @@ class CommandWC(Command):
                 file_path = os.path.join(env.get_cwd(), file)
                 if not os.path.isfile(file_path):
                     self.__output.write_line("wc: {}: No such file or directory.".
-                                        format(file))
+                                             format(file))
                     return_value = 1
                     break
                 with open(file, 'r') as opened_file:
@@ -281,14 +284,14 @@ class CommandWC(Command):
                 total_lines += line_count
                 if not len(self.__args) == 1:
                     self.__output.write_line('{:4d} {:4d} {:4d}    {}'.
-                                         format(line_count, word_count, byte_count, name))
+                                             format(line_count, word_count, byte_count, name))
                 else:
                     self.__output.write_line('{:4d} {:4d} {:4d}    {}'.
                                              format(line_count, word_count, byte_count, name))
 
             if len(self.__args) > 1:
                 self.__output.write_line('{:4d} {:4d} {:4d}    {}'.
-                                    format(total_lines, total_words, total_bytes, 'total'))
+                                         format(total_lines, total_words, total_bytes, 'total'))
         return CommandResult(self.__output, env, return_value)
 
 
@@ -297,6 +300,7 @@ class UnknownCommand(Command):
     Commands that are not in this implementation
     will be called from the standard shell.
     """
+
     def __init__(self, cmd, args):
         """
         Takes the command name and arguments if they are given.
@@ -337,6 +341,7 @@ class CommandASSIGNMENT(Command):
     """
     Command that assigns value to variable, i.e. x=10.
     """
+
     def __init__(self, var_name, value):
         """
         Takes the variable's name and value.

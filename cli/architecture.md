@@ -1,0 +1,26 @@
+#  CLI architecture description
+- Main class **Cli** has public method 'run' with the infinite loop where all the work is going on. It contains Environment, Lexer and Parser instances. The Cli takes input string, gives it to the Lexer, which returns the list of Lexemes, then gives this list to the Parser, returning runnable Command, and executes the result. Then it takes the output of Command or chain of Commands and prints it.
+- **Environment** class is the storage for environment, i.e. all variables and current working directory. It can set the name and the value of variable, returns the stored value by name and returns the path of current working directory.
+- **Lexer** class has method 'get_lexemes', which takes the input string, splits it by spaces, converts each word into **Lexeme** and returns the list of Lexemes, which one contains its value and type -- one of the **Lexeme types**: 
+    - VAR -- variable (that means presence of symbol '$');
+    - STRING_WITH_QUOTES -- single ( ' ) or double ( " ) quotes;
+    - ASSIGNMENT  -- assignment of variable (that means presence of symbol '=');
+    - PIPE -- symbol of pipe ( | );
+    - STRING -- all the rest.
+- **Parser** class has method named 'build_command'. It takes list of Lexemes and builds the chain of Commands and returns the root of the tree of Commands. This class uses the Preprocessor class for variables substitution and then converts Lexemes into Commands depending on the Lexeme type. 
+    - If the type of Lexeme is ASSIGNMENT then CommandASSIGNMENT will be created. The Lexeme value is splitted by '=' symbol, the left part is a name of the variable and the right part is its value.
+    - If type is STRING which comes first or first after the PIPE Lexeme -- this is the Command name while all Lexemes going after it and to the end of list or to the next PIPE are the list of arguments for this Command. The list of arguments is just list of values of these Lexemes, processed by Preprocessor.
+    - The other STRING, VAR and STRING_WITH_QUOTES Lexemes are processed with Preprocessor class. They are usually in the argument lists.
+    - PIPE Lexeme is just a sign of the end of previous Command and start of the next. Meeting it Parser creates CommandPIPE, which left Command is the last builded and the right is builded after it.s
+- **Preprocess** class is the static class that substitutes variables from the current Environment and removes redundant quotes if needed.
+- All **Commands** are derived from abstract **Command** and have public method 'run' which takes the input Stream and current Environment and returns the CommandResult. This method contains the executable part of each Command. There is a list of all Commands:
+    - **CommandPIPE**, which contains left and right Commands and executes them in an appropriate way.
+    - **CommandCAT**, which prints the content of files.
+    - **CommandPWD** printing the current working directory.
+    - **CommandEXIT**, which just raises the **ExitException**.
+    - **CommandECHO** displays a line of text that came as input.
+    - **CommandWC** printing newline, word, and byte counts for each given file.
+    - **CommandASSIGNMENT**, which assigns value to variable setting the new value in the Environment.
+    - **UnknownCommand** that is used to call not supported commands from the standard shell.
+- **CommandResult** is used as container for result of Command execution. It contains changed Environment, the return code of process and the output Stream.
+- **Stream** is simple abstraction of input and output streams. It just contains input or/and commands executions results. It has public methods to write into Stream and get its content.

@@ -8,7 +8,7 @@ from enum import Enum
 
 class Lexeme_type(Enum):
     """
-    Types of lexems:
+    Types of lexemes:
 
     VAR - string that starts the '$' symbol;
     STRING_WITH_QUOTES - string with single or double quotes around;

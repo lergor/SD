@@ -40,13 +40,13 @@ class Preprocessor:
         :param str: the string after the '$' symbol.
         :return: the variable name and the rest of the string.
         """
-        next_ix = 0
-        while next_ix < len(str):
-            if str[next_ix].isspace() or str[next_ix] in ('$', '\'', '\"'):
+        next_index = 0
+        while next_index < len(str):
+            if str[next_index].isspace() or str[next_index] in ('$', '\'', '\"'):
                 break
-            next_ix += 1
-        var_name = str[0:next_ix]
-        str = str[next_ix:]
+            next_index += 1
+        var_name = str[0:next_index]
+        str = str[next_index:]
         return var_name, str
 
     @staticmethod
@@ -65,24 +65,24 @@ class Preprocessor:
                 var_value = env.get_var_value(var_name)
                 result += var_value
             elif input[0] == '\"':
-                next_ix = input[1:].find('\"')
-                if next_ix == -1:
-                    raise ParserException('End of line: missing second quote.')
-                in_quotes = input[1:next_ix + 1]
+                next_index = input[1:].find('\"')
+                if next_index == -1:
+                    raise ParserException('End of line: missing second double quote.')
+                in_quotes = input[1:next_index + 1]
                 ix = in_quotes.find('\'')
                 if ix != -1:
                     in_quotes = Preprocessor.quotes_in_quotes(in_quotes, env)
-                    input = input[next_ix + 1:-1]
+                    input = input[next_index + 1:-1]
                 else:
                     in_quotes = Preprocessor.substitute_vars(in_quotes, env)
-                    input = input[next_ix + 2:]
+                    input = input[next_index + 2:]
                 result += in_quotes
             elif input[0] == '\'':
-                next_ix = input[1:].find('\'')
-                if next_ix == -1:
-                    raise ParserException('End of line: missing second quote2.')
-                result += input[1:next_ix+1]
-                input = input[next_ix + 2:]
+                next_index = input[1:].find('\'')
+                if next_index == -1:
+                    raise ParserException('End of line: missing second single quote.')
+                result += input[1:next_index+1]
+                input = input[next_index + 2:]
             else:
                 result += input[0]
                 input = input[1:]
