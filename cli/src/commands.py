@@ -1,0 +1,361 @@
+"""
+The abstraction of commands and their results in the CLI.
+All commands have method 'run', that takes input parameters
+and the environment and returns the CommandResult instance.
+
+Also contains ExitException that raises if command 'exit' was parsed.
+"""
+from abc import ABCMeta, abstractmethod
+import sys
+import subprocess
+from src.iostreams import *
+
+
+class ExitException(Exception):
+    """An exception raising when command 'exit' runs."""
+    pass
+
+
+class CommandResult:
+    """
+    The CommandResult passes the information about
+    the result of command.
+    Contains the input, the environment and the return flag.
+    """
+
+    def __init__(self, output, env, return_value=0):
+        """
+        :param output: the Stream instance with command result.
+        :param env: the Environment instance with variables.
+        :param return_value: return flag (int):
+        0 - process exited successfully
+        1 - otherwise
+        """
+        self.__output = output
+        self.__env = env
+        self.__return_value = return_value
+
+    def return_value(self):
+        """Returns the flag returned by command."""
+        return self.__return_value
+
+    def get_output(self):
+        """Returns the output of command execution."""
+        return self.__output.get_value()
+
+    def get_env(self):
+        """Returns the changed (or not) environment."""
+        return self.__env
+
+
+class Command(metaclass=ABCMeta):
+    """
+    The common class for all commands.
+    Contains method 'run' that starts executions.
+    """
+
+    @abstractmethod
+    def run(self, input, env):
+        return NotImplemented
+
+
+class CommandPIPE(Command):
+    """
+    The abstract of PIPE that takes left command's output
+    and redirect it to the right command as input stream.
+    """
+
+    def __init__(self, left, right):
+        """
+        Takes left and right commands.
+        :param left: some Command located to the left from the pipe.
+        :param right: some Command located to the right from the pipe.
+        """
+        self.__left_cmd = left
+        self.__right_cmd = right
+
+    def run(self, input, env):
+        """
+        Takes the input Stream and the environment,
+        executes left command with them,
+        takes its result Stream and new environment,
+        executes the right command with them
+        and return its result.
+        :param input: the Stream instance with previous results.
+        :param env: the Environment instance with variables.
+        :return: the right command result (CommandResult instance).
+        """
+        result_of_left = self.__left_cmd.run(input, env)
+
+        if result_of_left.return_value():
+            return result_of_left
+
+        changed_input = Stream()
+        output = result_of_left.get_output()
+        if output.endswith(os.linesep):
+            output = output[0:-(len(os.linesep))]
+        changed_input.write_line(output)
+        changed_env = result_of_left.get_env()
+        return self.__right_cmd.run(changed_input, changed_env)
+
+
+class CommandCAT(Command):
+    """
+    The command 'cat' takes files and prints their content
+    on the standard output. May has one and more arguments and
+    even zero if placed on the right from PIPE.
+    """
+
+    def __init__(self, args):
+        """
+        Takes arguments if they are given.
+        :param args: list with file names.
+        """
+        self.__args = args
+
+    def run(self, input, env):
+        """
+        Takes the input Stream and the environment, writes the content of files
+        in the Stream and returns the result.
+        :param input: the Stream instance with previous results.
+        :param env: the Environment instance with variables.
+        :return: the CommandResult instance with contents of arguments.
+        """
+        return_value = 0
+        self.__output = Stream()
+        num_of_args = len(self.__args)
+
+        if not num_of_args:
+            self.__output.write(input.get_value())
+        else:
+            for file in self.__args:
+                file_path = os.path.join(env.get_cwd(), file)
+                if not os.path.isfile(file_path):
+                    self.__output.write_line('cat: {}: No such file or directory.'.
+                                             format(file))
+                    return_value = 1
+                    break
+                with open(file, 'r') as opened_file:
+                    self.__output.write(opened_file.read())
+        return CommandResult(self.__output, env, return_value)
+
+
+class CommandPWD(Command):
+    """
+    The 'pwd' command prints name of current/working directory.
+    """
+
+    def __init__(self, args):
+        """
+        Takes arguments if they are given.
+        :param args: list of arguments.
+        """
+        self.__args = args
+
+    def run(self, input, env):
+        """
+        Takes the input Stream and the environment
+        and returns current directory.
+        :param input: the Stream instance with previous results.
+        :param env: the Environment instance with variables.
+        :return: the CommandResult instance with current directory.
+        """
+        self.__output = Stream()
+        return_value = 0
+        if self.__args:
+            self.__output.write_line('Wrong number of arguments for pwd command:'
+                                     ' expected 0, got {}.'.format(len(self.__args)))
+            return_value = 1
+            return CommandResult(self.__output, env, return_value)
+
+        self.__output.write_line(env.get_cwd())
+        return CommandResult(self.__output, env, return_value)
+
+
+class CommandEXIT(Command):
+    """
+    The class of 'exit' command causes normal process termination.
+    Raises ExitException that will be catched
+    in the main loop of program in the Cli class.
+    """
+
+    def __init__(self, args):
+        """
+        Takes arguments if they are given.
+        :param args: list of arguments.
+        """
+        self.__args = args
+
+    def run(self, input, env):
+        """
+        Just raises ExitException.
+        :param input: the Stream instance with previous results.
+        :param env: the Environment instance with variables.
+        """
+        raise ExitException('Bye!')
+
+
+class CommandECHO(Command):
+    """ The 'echo' command, displays a line of text that came as input."""
+
+    def __init__(self, args=['']):
+        """
+        Takes arguments if they are given.
+        :param args: list of arguments.
+        """
+        self.__args = args
+
+    def run(self, input, env):
+        """
+        Takes the input Stream and the environment and prints the arguments.
+        :param input: the Stream instance with previous results.
+        :param env: the Environment instance with variables.
+        :return: the CommandResult instance with printed arguments.
+        """
+        output = Stream()
+        output.write_line(' '.join(self.__args))
+        return CommandResult(output, env, 0)
+
+
+class CommandWC(Command):
+    """
+    The 'wc' prints newline, word, and byte counts for each file.
+    """
+
+    def __init__(self, args):
+        """
+        Takes arguments if they are given.
+        :param args: list of arguments.
+        """
+        self.__args = args
+
+    def __count_lines_words_bytes(self, input):
+        """
+        Counts newlines, words and bytes for the input file.
+        :param input: the name of file (string).
+        :return: list with three counts.
+        """
+        lines = input.split(os.linesep)
+        line_count = max(len(lines) - 1, 1)
+        word_count = len(input.split())
+        char_count = len(input.replace(os.linesep, '\n'))
+        return [line_count, word_count, char_count]
+
+    def run(self, input, env):
+        """
+        Takes the input Stream and the environment, counts newlines,
+        words and bytes in each argument and returns the result.
+        If more than one argument given also return total counts.
+        :param input: the Stream instance with previous results.
+        :param env: the Environment instance with variables.
+        :return: the CommandResult instance with all counts.
+        """
+        self.__output = Stream()
+        return_value = 0
+        result = list()
+
+        if not self.__args:
+            result.append((' ',
+                           self.__count_lines_words_bytes(input.get_value())))
+        else:
+            for file in self.__args:
+                file_path = os.path.join(env.get_cwd(), file)
+                if not os.path.isfile(file_path):
+                    self.__output.write_line("wc: {}: No such file or directory.".
+                                             format(file))
+                    return_value = 1
+                    break
+                with open(file, 'r') as opened_file:
+                    text = opened_file.read()
+                    result.append((file, self.__count_lines_words_bytes(text)))
+
+        if return_value is 0:
+            total_lines = 0
+            total_words = 0
+            total_bytes = 0
+            for (name, [line_count, word_count, byte_count]) in result:
+                total_bytes += byte_count
+                total_words += word_count
+                total_lines += line_count
+                if not len(self.__args) == 1:
+                    self.__output.write_line('{:4d} {:4d} {:4d}    {}'.
+                                             format(line_count, word_count, byte_count, name))
+                else:
+                    self.__output.write_line('{:4d} {:4d} {:4d}    {}'.
+                                             format(line_count, word_count, byte_count, name))
+
+            if len(self.__args) > 1:
+                self.__output.write_line('{:4d} {:4d} {:4d}    {}'.
+                                         format(total_lines, total_words, total_bytes, 'total'))
+        return CommandResult(self.__output, env, return_value)
+
+
+class UnknownCommand(Command):
+    """
+    Commands that are not in this implementation
+    will be called from the standard shell.
+    """
+
+    def __init__(self, cmd, args):
+        """
+        Takes the command name and arguments if they are given.
+        :param cmd: the command name (string).
+        :param args: list of arguments.
+        """
+        self.__command = cmd
+        self.__args = args
+
+    def run(self, input, env):
+        """
+        Takes the input Stream and the environment and
+        tries to call the command with given arguments from the standard shell.
+        :param input: the Stream instance with previous results.
+        :param env: the Environment instance with variables.
+        :return: the CommandResult instance with results of the called process.
+        """
+        self.__output = Stream()
+        args_list = [self.__command]
+        args_list.extend(self.__args)
+
+        try:
+            process = subprocess.run(args_list,
+                                     input=input.get_value(),
+                                     stdout=subprocess.PIPE,
+                                     encoding=sys.stdout.encoding)
+            return_value = process.returncode
+            self.__output.write(str(process.stdout))
+
+        except Exception as err:
+            self.__output.write_line('Command {}: command not found.'.
+                                     format(self.__command))
+            return_value = 1
+
+        return CommandResult(self.__output, env, return_value)
+
+
+class CommandASSIGNMENT(Command):
+    """
+    Command that assigns value to variable, i.e. x=10.
+    """
+
+    def __init__(self, var_name, value):
+        """
+        Takes the variable's name and value.
+        :param var_name: name of the variable (string).
+        :param value: new value of the variable (string).
+        """
+        self.__var_name = var_name
+        self.__value = value
+
+    def run(self, input, env):
+        """
+        Takes the input Stream and the environment and
+        puts the new value of the variable into the environment.
+        :param input: the Stream instance with previous results.
+        :param env: the Environment instance with variables.
+        :return: the CommandResult instance with the changed environment.
+        """
+        self.__output = Stream()
+        return_value = 0
+        env.set_var_value(self.__var_name, self.__value)
+        return CommandResult(input, env, return_value)
